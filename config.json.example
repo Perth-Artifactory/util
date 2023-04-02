@@ -1,0 +1,4 @@
+{"slack":{"bot_token":"xoxb-",
+          "app_token":"xapp-",
+          "notification_channel":"C"},
+ "debug":true}

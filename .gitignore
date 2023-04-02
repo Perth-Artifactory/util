@@ -130,3 +130,5 @@ dmypy.json
 
 config.json
 events.json
+google.secret.json
+token.json

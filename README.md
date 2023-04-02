@@ -11,6 +11,9 @@ Collection of (typically) single file utility scripts used in the workshop that 
   * `slack/app_token` - Create an app level token with access to `connections:write`
   * `slack/notification_channel` - The channel where general notification messages should be sent
   * `tidyhq/token` - A TidyHQ authentication token
+  * `google/calendar_id` - The ID of your main event calendar
+* Get `google.secret.json` by creating a google app with access to the calendar API.
+* Run `auth_google.py` to get a token using `google.secret.json`
 
 ## Slack
 
@@ -44,3 +47,19 @@ Generates a HTML event report for event hosts that do not have access to TidyHQ.
 #### Running
 
 * `event_report.py report_name > /var/www/reports/report_name.html`
+
+## Misc
+
+### Unauthenticated google calendar feed
+
+Generates a JSON summary of upcoming calendar events
+
+#### Setup
+
+* Ensure `auth_google.py` has executed correctly and returned the details of the next event on the calendar
+
+#### Running
+
+This script will need some form of scheduled release. Recommend once a day.
+
+* `export_calendar.py > /var/www/reports/calendar.json`

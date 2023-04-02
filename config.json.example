@@ -2,4 +2,5 @@
           "app_token":"xapp-",
           "notification_channel":"C"},
  "tidyhq":{"token":""},
+ "google":{"calendar_id":"@group.calendar.google.com"},
  "debug":true}

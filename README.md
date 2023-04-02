@@ -32,7 +32,7 @@ This script will need some form of detached execution. Whether that's a screen, 
 
 ### Public event report
 
-Generates a HTML event report for event hosts that do not have access to TidyHQ.
+Generates a HTML event report for event hosts that do not have access to TidyHQ. Initial code from [eventReports](https://github.com/Perth-Artifactory/eventReports)
 
 #### Setup
 

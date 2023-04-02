@@ -10,6 +10,7 @@ Collection of (typically) single file utility scripts used in the workshop that 
   * `slack/bot_token` - The bot token from your Slack app, only present after being installed to the workspace
   * `slack/app_token` - Create an app level token with access to `connections:write`
   * `slack/notification_channel` - The channel where general notification messages should be sent
+  * `tidyhq/token` - A TidyHQ authentication token
 
 ## Slack
 
@@ -17,4 +18,29 @@ Collection of (typically) single file utility scripts used in the workshop that 
 
 Uses Slack's socket mode to listen for new channel creation events and sends a message to a preconfigured channel with the name of the new channel and who created it.
 
-`monitor_new_channels.py`
+#### Setup
+
+* Ensure that `slack/bot_token`, `slack/app_token`, and `slack/notification_channel` are set.
+
+#### Running
+
+This script will need some form of detached execution. Whether that's a screen, systemd, or something else is up to you.
+
+* `monitor_new_channels.py`
+
+## TidyHQ
+
+### Public event report
+
+Generates a HTML event report for event hosts that do not have access to TidyHQ.
+
+#### Setup
+
+* Ensure that `tidyhq/token` is set
+* Adjust `event_report_template.html`
+* `cp events.json.example events.json`
+* Set up at least one report. The report name should be alphanumeric. Easiest way to get event IDs is to grab the number from the start of an event url. 
+
+#### Running
+
+* `event_report.py report_name > /var/www/reports/report_name.html`

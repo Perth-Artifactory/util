@@ -40,30 +40,13 @@ def get_slack():
                         "name":user["profile"].get("real_name_normalized")}
     return c
 
-def time_since_membership(memberships: list[dict]) -> int:
-    """Returns the number of days since the most recent membership expired
-    Negative numbers indicate that the membership is still active"""
-    newest = 60000
-    for membership in memberships:
-        try:
-            date = datetime.strptime(membership["end_date"], "%Y-%m-%d")
-        except ValueError:
-            try:
-                date = datetime.strptime(membership["end_date"], "%d-%m-%Y")
-            except ValueError:
-                print(membership)
-        since = int((datetime.now()-date).total_seconds()/86400)
-        if since < newest:
-            newest = int(since)
-    return newest
-
 def get_tidyhq_memberships():
     r = requests.get("https://api.tidyhq.com/v1//memberships",params={"access_token":config["tidyhq"]["token"]})
     memberships = r.json()
     active = []
     for membership in memberships:
         if membership["state"] != "expired":
-            active.append(membership["id"])
+            active.append(membership["contact_id"])
     return active
 
 slack_users = get_slack()

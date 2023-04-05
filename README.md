@@ -50,17 +50,18 @@ Generates a HTML event report for event hosts that do not have access to TidyHQ.
 
 ### Unauthenticated google calendar feed
 
-Generates a JSON summary of upcoming calendar events
+Generates a JSON summary of upcoming calendar events from either Google Calendar or TidyHQ.
 
 #### Setup
 
-* Ensure `auth_google.py` has executed correctly and returned the details of the next event on the calendar
+* Ensure `auth_google.py` has executed correctly and returned the details of the next event on the calendar if using Google Calendar.
+* Ensure `tidyhq/token` is set if using TidyHQ
 
 #### Running
 
 This script will need some form of scheduled release. Recommend once a day.
 
-* `export_calendar.py > /var/www/reports/calendar.json`
+* `export_calendar.py [tidyhq|gcal] > /var/www/reports/calendar.json`
 
 ### Match TidyHQ contacts with Slack users
 

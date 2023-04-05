@@ -1,7 +1,9 @@
-import datetime
+from datetime import datetime
 import json
 import os
 import sys
+import requests
+from pprint import pprint
 
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
@@ -12,14 +14,14 @@ from googleapiclient.errors import HttpError
 with open("config.json","r") as f:
     config: dict = json.load(f)
 
-def main() -> None:
+def gcal() -> None:
    
     creds = Credentials.from_authorized_user_file('token.json', ['https://www.googleapis.com/auth/calendar.readonly'])
     try:
         service = build('calendar', 'v3', credentials=creds)
 
         # Call the Calendar API
-        now = datetime.datetime.utcnow().isoformat() + 'Z'  # 'Z' indicates UTC time
+        now = datetime.utcnow().isoformat() + 'Z'  # 'Z' indicates UTC time
         events_result = service.events().list(calendarId=config["google"]["calendar_id"], timeMin=now,
                                               maxResults=30, singleEvents=True,
                                               orderBy='startTime').execute()
@@ -45,5 +47,32 @@ def main() -> None:
     except HttpError as error:
         sys.exit()
 
+# Retrives the next 30 events from tidyhq, formats them the same as gcal and returns them as a json string
+def tidyhq() -> None:
+    try:
+        r = requests.get("https://api.tidyhq.com/v1/events",params={"access_token":config["tidyhq"]["token"],
+                                                                    "limit":30,
+                                                                    "start_at":datetime.utcnow().isoformat() + 'Z',
+                                                                    "public":True})
+        events = r.json()
+    except requests.exceptions.RequestException as e:
+        return False
+    formated_events = []
+    for event in events:
+        formated_events.append({
+            "start": event['start_at'],
+            "end": event['end_at'],
+            "summary": event['name'],
+            "description": event['body'],
+            "location": event['location'],
+            "url": event['public_url'],
+            "id": event['id']
+        })
+    return json.dumps(formated_events, indent=4)
+
 if __name__ == '__main__':
-    print(main())
+    if len(sys.argv) > 1:
+        if sys.argv[1] == "gcal":
+            print(gcal())
+        elif sys.argv[1] == "tidyhq":
+            print(tidyhq())

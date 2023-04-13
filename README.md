@@ -95,3 +95,32 @@ This can be used to push a report by:
 * `sed -i '11,$ d' path/to/wiki_page` - Remove the contents of the page after the header (header is typically 10 lines)
 * `python3 operator_report.py report_name >> path/to/wiki_page`
 * Commit the changed file
+
+eg.
+
+```bash
+#!/bin/bash
+
+page=~/committee/wiki/docs/reports/Laser_operators.md
+
+# Update wiki repo
+cd ~/committee/wiki/
+git fetch --all
+git reset --hard origin/main
+
+# Purge existing report
+
+sed -i '11,$ d' $page
+
+# Add new report to end of page
+
+cd ~/util
+python3 operator_report.py lasers >> "${page}"
+
+# Commit report if it's changed
+
+cd ~/committee/wiki/
+git add $page
+git commit -m "Update laser operators from TidyHQ"
+git push
+```

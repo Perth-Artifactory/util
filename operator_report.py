@@ -29,7 +29,7 @@ def format_user(contact):
     n = ''
     if contact["nick_name"]:
         n = f' ({contact["nick_name"]})'
-    return f'{contact["first_name"]} {contact["last_name"]}{n}'
+    return f'{contact["first_name"].capitalize()} {contact["last_name"].capitalize()}{n}'
 
 # Set up logging
 logging.basicConfig(level=logging.INFO)
@@ -76,7 +76,7 @@ for group in report:
 # Generate the report
 lines = [f'| Operator | {" | ".join(machines)} |']
 lines.append(f'| --- | {" | ".join(["---"] * len(machines))} |')
-for operator in contacts_indexed:
+for operator in sorted(contacts_indexed):
     s = f'| {operator} | '
     for machine in machines:
         if machine in contacts_indexed[operator]:

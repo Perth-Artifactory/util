@@ -75,3 +75,23 @@ Matches TidyHQ contacts with Slack user accounts based on registration email. On
 #### Running
 
 `link_slack_tidyhq.py`
+
+### Generate list of machine operators based on TidyHQ groups
+
+Formats a markdown table of approved operators based on whether a contact is in a configured TidyHQ group
+
+#### Setup
+* Ensure that TidyHQ credentials have been set in `config.json`
+* `cp machines.json.example machines.json`
+  * Configure at least one report. Report names should be alphanumeric.
+
+#### Running
+
+`operator_report.py report_name` will output a markdown formatted table. It explicitly does not include a "generated on" line so that it doesn't trigger unnecesary page changes.
+
+This can be used to push a report by:
+
+* Cloning the wiki
+* `sed -i '11,$ d' path/to/wiki_page` - Remove the contents of the page after the header (header is typically 10 lines)
+* `python3 operator_report.py report_name >> path/to/wiki_page`
+* Commit the changed file

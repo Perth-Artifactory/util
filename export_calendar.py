@@ -36,6 +36,8 @@ def gcal() -> None:
         for event in events:
             start = event['start'].get('dateTime', event['start'].get('date'))
             end = event['end'].get('dateTime', event['end'].get('date'))
+            if "description" not in event:
+                event["description"] = ""
             formated_events.append({
                 "start": start,
                 "end": end,

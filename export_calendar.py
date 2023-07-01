@@ -38,12 +38,19 @@ def gcal() -> None:
             end = event['end'].get('dateTime', event['end'].get('date'))
             if "description" not in event:
                 event["description"] = ""
+            # Add fake hours to all day events
+            if len(start) == 10:
+                start = start + "T00:00:00+08:00"
+            if len(end) == 10:
+                end = end + "T00:00:00+08:00"
+            
             formated_events.append({
                 "start": start,
                 "end": end,
                 "summary": event['summary'],
                 "description": event['description']
             })
+            print(type(start))
         return json.dumps(formated_events, indent=4)
 
     except HttpError as error:

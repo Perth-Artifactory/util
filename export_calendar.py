@@ -50,7 +50,6 @@ def gcal() -> None:
                 "summary": event['summary'],
                 "description": event['description']
             })
-            print(type(start))
         return json.dumps(formated_events, indent=4)
 
     except HttpError as error:

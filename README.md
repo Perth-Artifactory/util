@@ -48,6 +48,18 @@ Generates a HTML event report for event hosts that do not have access to TidyHQ.
 
 * `event_report.py report_name > /var/www/reports/report_name.html`
 
+### Duplicate TidyHQ events
+
+Creates repeating TidyHQ events
+
+#### Setup
+
+* Ensure that `tidyhq/token` is set
+
+#### Running
+
+* `duplicate_events.py` - follow the prompts
+
 ### Unauthenticated google calendar feed
 
 Generates a JSON summary of upcoming calendar events from either Google Calendar or TidyHQ.

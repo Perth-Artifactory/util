@@ -14,8 +14,7 @@ with open("config.json","r") as f:
 if len(sys.argv) > 1:
     channel_id = sys.argv[1]
 else:
-    channel_id = "C05PSEFRA3W"
-    #sys.exit("Please specify channel ID as argument")
+    sys.exit("Please specify channel ID as argument")
 
 logging.basicConfig(level=logging.INFO)
 

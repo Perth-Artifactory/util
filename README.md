@@ -147,4 +147,6 @@ Allow users to submit files in a slack channel and ingest them into other applic
 
 #### Running
 
-* `dl_slack_files.py <channel_id>`
+* `dl_slack_files.py [-d] <channel_id>`
+
+`-d` will run the script in "daemon" mode. The script will wait 60 seconds between loops.

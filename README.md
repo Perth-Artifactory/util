@@ -14,6 +14,7 @@ Collection of (typically) single file utility scripts used in the workshop that 
   * `tidyhq/ids`
     * `slack` - The custom field ID for a slack user ID
   * `google/calendar_id` - The ID of your main event calendar
+  * `download_dir` - A directory to download files to
 * Get `google.secret.json` by creating a google app with access to the calendar API.
 * Run `auth_google.py` to get a token using `google.secret.json`
 
@@ -136,3 +137,14 @@ git add $page
 git commit -m "Update laser operators from TidyHQ"
 git push
 ```
+
+### Download files sent to a Slack channel
+
+Allow users to submit files in a slack channel and ingest them into other applications
+
+#### Setup
+* Ensure that Slack credentials have been set in `config.json` and a download directory has been set
+
+#### Running
+
+* `dl_slack_files.py <channel_id>`

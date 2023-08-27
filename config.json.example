@@ -4,4 +4,5 @@
  "tidyhq":{"token":"",
            "ids":{"slack":""}},
  "google":{"calendar_id":"@group.calendar.google.com"},
- "debug":true}
+ "debug":true,
+ "download_dir":"./"}

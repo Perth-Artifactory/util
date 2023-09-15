@@ -150,3 +150,14 @@ Allow users to submit files in a slack channel and ingest them into other applic
 * `dl_slack_files.py [-d] <channel_id>`
 
 `-d` will run the script in "daemon" mode. The script will wait 60 seconds between loops.
+
+### Generate a snapshot of TidyHQ memberships
+
+Generate memberhip numbers for a particular date
+
+#### Setup
+* Ensure that a TidyHQ token has been set in `config.json`
+
+#### Running
+
+* `tidyhq_membership_snapshot.py`

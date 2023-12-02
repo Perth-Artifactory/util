@@ -121,6 +121,9 @@ else:
 # Initiate Slack client
 app = App(token=config["slack"]["bot_token"])
 
+# Get info for our Slack connection
+slack_info = app.client.auth_test()  # type: ignore
+logging.info(f'Connected to Slack as "{slack_info["user"]} with ID {slack_info["user_id"]}')
 
 logging.info("Getting Slack users...")
 slack_users = get_slack()

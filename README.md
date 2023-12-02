@@ -1,5 +1,6 @@
 # util
-Collection of (typically) single file utility scripts used in the workshop that dont have a home elsewhere
+
+Collection of (typically) single file utility scripts used in the workshop that don't have a home elsewhere
 
 ## Requirements
 
@@ -47,7 +48,7 @@ Generates a HTML event report for event hosts that do not have access to TidyHQ.
 * Ensure that `tidyhq/token` is set
 * Adjust `event_report_template.html`
 * `cp events.json.example events.json`
-* Set up at least one report. The report name should be alphanumeric. Easiest way to get event IDs is to grab the number from the start of an event url. 
+* Set up at least one report. The report name should be alphanumeric. Easiest way to get event IDs is to grab the number from the start of an event url.
 
 #### Running
 
@@ -98,13 +99,14 @@ Matches TidyHQ contacts with Slack user accounts based on registration email. On
 Formats a markdown table of approved operators based on whether a contact is in a configured TidyHQ group
 
 #### Setup
+
 * Ensure that TidyHQ credentials have been set in `config.json`
 * `cp machines.json.example machines.json`
   * Configure at least one report. Report names should be alphanumeric.
 
 #### Running
 
-`operator_report.py report_name` will output a markdown formatted table. It explicitly does not include a "generated on" line so that it doesn't trigger unnecesary page changes.
+`operator_report.py report_name` will output a markdown formatted table. It explicitly does not include a "generated on" line so that it doesn't trigger unnecessary page changes.
 
 This can be used to push a report by:
 
@@ -147,6 +149,7 @@ git push
 Allow users to submit files in a slack channel and ingest them into other applications
 
 #### Setup
+
 * Ensure that Slack credentials have been set in `config.json` and a download directory has been set
 
 #### Running
@@ -157,9 +160,10 @@ Allow users to submit files in a slack channel and ingest them into other applic
 
 ### Generate a snapshot of TidyHQ memberships
 
-Generate memberhip numbers for a particular date
+Generate membership numbers for a particular date
 
 #### Setup
+
 * Ensure that a TidyHQ token has been set in `config.json`
 
 #### Running

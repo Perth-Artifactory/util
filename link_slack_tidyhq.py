@@ -85,7 +85,7 @@ def notify_slack(slack_user: dict[str, Any], tidyhq_user: dict[str, Any], method
             "type": "section",
             "text": {
                 "type": "mrkdwn",
-                "text": f'TidyHQ account <https://{domain}.tidyhq.com/contacts/{tidyhq_user["id"]}|John Doe> has been linked to <@{slack_user["id"]}>',
+                "text": f'TidyHQ account <https://{domain}.tidyhq.com/contacts/{tidyhq_user["id"]}|{tidyhq_user["first_name"]} {tidyhq_user["last_name"]}> has been linked to <@{slack_user["id"]}>',
             },
         },
         {
@@ -132,15 +132,15 @@ if not tidyhq_users:
     exit(1)
 logging.debug(f"Got {len(tidyhq_users)} TidyHQ users")
 
+# Get TidyHQ org name for URLs.
+domain: str = requests.get(
+    "https://api.tidyhq.com/v1/organization",
+    params={"access_token": config["tidyhq"]["token"]},
+).json()["domain_prefix"]
+
 # Check for --cron flag
 if len(sys.argv) > 1 and "--cron" in sys.argv:
     logging.info("Running in cron mode")
-
-    # Get org name for URLs.
-    domain: str = requests.get(
-        "https://api.tidyhq.com/v1/organization",
-        params={"access_token": config["tidyhq"]["token"]},
-    ).json()["domain_prefix"]
 
     # Check for any users in Slack that are not in TidyHQ
     for email in tidyhq_users:
@@ -189,6 +189,6 @@ else:
                 slack_id: str = input("Enter Slack ID [or leave blank to skip]: ")
                 if slack_id:
                     if link_accounts(t["id"], slack_id):
-                        notify_slack(slack_users[slack_id], t, "manual entry")
+                        notify_slack({"id": slack_id}, t, "manual entry")
                 else:
                     print("Skipping")

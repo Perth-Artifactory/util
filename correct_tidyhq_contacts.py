@@ -25,6 +25,10 @@ def correct_name(name: str) -> str:
             # Special case for Mc
             if word[:2] == "Mc" and len(word) > 2:
                 word = word[:2] + word[2].upper() + word[3:]
+                
+            # special case for Mac
+            if word[:3] == "Mac" and len(word) > 6:
+                word = word[:3] + word[3].upper() + word[4:]
             
             # Special case for '
             if "'" in word:

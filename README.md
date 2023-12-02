@@ -89,10 +89,14 @@ Matches TidyHQ contacts with Slack user accounts based on registration email. On
 
 * Ensure that Slack and TidyHQ credentials have been set in `config.json`
 * Set a custom field for Slack IDs
+* Set a Slack notification channel
 
 #### Running
 
-`link_slack_tidyhq.py`
+`link_slack_tidyhq.py [--debug --cron]`
+
+* debug: Adds debugging messages
+* cron: Does not prompt for manual override and does not ask for confirmation before linking
 
 ### Generate list of machine operators based on TidyHQ groups
 

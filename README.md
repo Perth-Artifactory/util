@@ -98,6 +98,21 @@ Matches TidyHQ contacts with Slack user accounts based on registration email. On
 * debug: Adds debugging messages
 * cron: Does not prompt for manual override and does not ask for confirmation before linking
 
+### Apply corrections to TidyHQ contact fields
+
+Capitalise contact names and strip whitespace.
+
+#### Setup
+
+* Ensure that TidyHQ credentials have been set in `config.json`
+
+#### Running
+
+`correct_tidyhq_contacts.py [--debug --cron]`
+
+* debug: Adds debugging messages
+* cron: Applies corrections automatically and with no output
+
 ### Generate list of machine operators based on TidyHQ groups
 
 Formats a markdown table of approved operators based on whether a contact is in a configured TidyHQ group

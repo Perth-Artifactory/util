@@ -84,7 +84,7 @@ This script will need some form of scheduled release. Recommend once a day.
 ### Match TidyHQ contacts with Slack users
 
 Matches TidyHQ contacts with Slack user accounts based on registration email. Only flags TidyHQ contacts missing on Slack if they have an active membership.
-
+ 
 #### Setup
 
 * Ensure that Slack and TidyHQ credentials have been set in `config.json`
@@ -100,7 +100,9 @@ Matches TidyHQ contacts with Slack user accounts based on registration email. On
 
 ### Apply corrections to TidyHQ contact fields
 
-Capitalise contact names and strip whitespace.
+* Capitalise contact names
+* Strip whitespace
+* Remove nicknames that match first names
 
 #### Setup
 

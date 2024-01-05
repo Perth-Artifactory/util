@@ -21,23 +21,31 @@ def correct_name(name: str) -> str:
         if word:
             # Capitalise the first letter of the word but leave the rest of the word alone
             word = word[0].upper() + word[1:]
-            
+
             # Special case for Mc
             if word[:2] == "Mc" and len(word) > 2:
                 word = word[:2] + word[2].upper() + word[3:]
-                
+
             # special case for Mac
             if word[:3] == "Mac" and len(word) > 6:
                 word = word[:3] + word[3].upper() + word[4:]
-            
+
             # Special case for '
             if "'" in word:
-                word = word[: word.index("'") + 1] + word[word.index("'") + 1].upper() + word[word.index("'") + 2:]
-            
+                word = (
+                    word[: word.index("'") + 1]
+                    + word[word.index("'") + 1].upper()
+                    + word[word.index("'") + 2 :]
+                )
+
             # Special case for hyphenated names
             if "-" in word:
-                word = word[: word.index("-") + 1] + word[word.index("-") + 1].upper() + word[word.index("-") + 2:]
-            
+                word = (
+                    word[: word.index("-") + 1]
+                    + word[word.index("-") + 1].upper()
+                    + word[word.index("-") + 2 :]
+                )
+
             fixed_name += word + " "
 
     return fixed_name.strip()
@@ -75,7 +83,7 @@ except requests.exceptions.RequestException:
 # Check for --cron flag
 if "--cron" in sys.argv:
     logging.info("Running in cron mode")
-    
+
     # Iterate over each contact
     for contact in contacts:
         corrections: dict[str, str] = {}
@@ -84,9 +92,20 @@ if "--cron" in sys.argv:
         if contact["kind"] != "person":
             continue
 
+        # Check if names are capitalised
         for field in ["first_name", "last_name"]:
             if contact[field] != correct_name(contact[field]):
                 corrections[field] = correct_name(contact[field])
+
+        # Check if their nickname is just their first name
+        if (
+            type(contact["nick_name"]) == str
+            and contact["nick_name"] != ""
+            and type(contact["first_name"]) == str
+            and contact["first_name"] != ""
+        ):
+            if contact["nick_name"].lower() == contact["first_name"].lower():
+                corrections["nick_name"] = ""
 
         if corrections:
             # send corrected data to TidyHQ
@@ -105,10 +124,21 @@ else:
         if contact["kind"] != "person":
             continue
 
+        # Check if names are capitalised
         for field in ["first_name", "last_name"]:
             if contact[field] != correct_name(contact[field]):
                 pprint(contact[field])
                 corrections[field] = correct_name(contact[field])
+
+        # Check if their nickname is just their first name
+        if (
+            type(contact["nick_name"]) == str
+            and contact["nick_name"] != ""
+            and type(contact["first_name"]) == str
+            and contact["first_name"] != ""
+        ):
+            if contact["nick_name"].lower() == contact["first_name"].lower():
+                corrections["nick_name"] = ""
 
         if corrections:
             # Print corrections

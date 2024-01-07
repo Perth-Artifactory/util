@@ -9,17 +9,50 @@ import logging
 from pprint import pprint
 
 
-def get_group_name(group_id):
-    try:
-        r = requests.get(
-            f"https://api.tidyhq.com/v1/groups/{group_id}",
-            params={"access_token": config["tidyhq"]["token"]},
-        )
-        group = r.json()
-    except requests.exceptions.RequestException as e:
-        logging.error("Could not reach TidyHQ")
-        return False
-    return group["label"].replace("Machine Operator - ", "")
+def get_group_info(id=None, name=None):
+    group = None
+    if not id and not name:
+        logging.error("Provide either an ID or a group name")
+        sys.exit(1)
+    if id:
+        group_id = id
+        try:
+            r = requests.get(
+                f"https://api.tidyhq.com/v1/groups/{group_id}",
+                params={"access_token": config["tidyhq"]["token"]},
+            )
+            group = r.json()
+        except requests.exceptions.RequestException as e:
+            logging.error("Could not reach TidyHQ")
+            sys.exit(1)
+    elif name:
+        try:
+            r = requests.get(
+                f"https://api.tidyhq.com/v1/groups",
+                params={"access_token": config["tidyhq"]["token"]},
+            )
+            groups = r.json()
+        except requests.exceptions.RequestException as e:
+            logging.error("Could not reach TidyHQ")
+            sys.exit(1)
+        for group_i in groups:
+            trim_group_i = group_i["label"].replace("Machine Operator - ", "")
+            if trim_group_i == name:
+                group = group_i
+                break
+    if not group:
+        logging.error(f'Trouble getting info for group "{name}"')
+        sys.exit(1)
+    processed = {}
+    if group["description"]:
+        desc_lines = group["description"].split("\n")
+        for line in desc_lines:
+            if "=" in line:
+                key, value = line.split("=")
+                processed[key.strip()] = value.strip()
+    name = group["label"].replace("Machine Operator - ", "")
+    processed["name"] = name
+    return processed
 
 
 def find_users_in_group(group_id):
@@ -59,7 +92,7 @@ if len(sys.argv) < 2:
     for report in reports:
         print(f"{report}")
         for group in reports[report]:
-            print(f"    {get_group_name(group)} ({group})")
+            print(f'    {get_group_info(group)["name"]} ({group})')
         print("")
     print(
         "You can also use 'all' to get a list of operators from all groups. Each group will only be listed once and specific groups can be excluded by adding them to the 'exclude' list in machines.json"
@@ -104,7 +137,7 @@ except requests.exceptions.RequestException as e:
 contacts_indexed = {}
 machines = []
 for group in report:
-    machine_name = get_group_name(group)
+    machine_name = get_group_info(group)["name"]
     machines.append(machine_name)
     for contact in find_users_in_group(group):
         contact_name = format_user(contact)
@@ -113,8 +146,21 @@ for group in report:
         contacts_indexed[contact_name].append(machine_name)
 
 # Generate the report
-lines = [f'| Operator | {" | ".join(machines)} |']
+
+# Generate header
+header = "| Operator | "
+for machine in machines:
+    info = get_group_info(name=machine)
+    if "url" in info:
+        header += f'[{info["name"]}]({info["url"]}) | '
+    else:
+        header += f'{info["name"]} | '
+lines = [header]
+
+# Add separator
 lines.append(f'| --- | {" | ".join(["---"] * len(machines))} |')
+
+# Add each operator as a line
 for operator in sorted(contacts_indexed):
     s = f"| {operator} | "
     for machine in machines:

@@ -117,7 +117,9 @@ Matches TidyHQ contacts with Slack user accounts based on registration email. On
 
 ### Generate list of machine operators based on TidyHQ groups
 
-Formats a markdown table of approved operators based on whether a contact is in a configured TidyHQ group. Passing the special report name "all" will generate a report including a deduplicated list of all other reports.
+Formats a markdown table of approved operators based on whether a contact is in a configured TidyHQ group.
+
+Passing the special report name "all" will generate a report including a deduplicated list of all other reports. Specific groups can be excluded from this report by adding them to the special "exclude" group.
 
 #### Setup
 

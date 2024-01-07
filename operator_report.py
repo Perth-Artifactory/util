@@ -58,10 +58,16 @@ if len(sys.argv) < 2:
 report_name = sys.argv[1]
 
 if report_name == "all":
+    # check for exclusion report
+    if "exclude" not in reports.keys():
+        exclusions = []
+    else:
+        exclusions = reports["exclude"]
+
     deduped_reports = []
     for report in reports:
         for group in reports[report]:
-            if group not in deduped_reports:
+            if group not in deduped_reports and group not in exclusions:
                 deduped_reports.append(group)
     report = deduped_reports
 elif report_name not in reports:

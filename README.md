@@ -165,6 +165,18 @@ git commit -m "Update laser operators from TidyHQ"
 git push
 ```
 
+### Bulk create TidyHQ groups
+
+Bulk create TidyHQ groups with a specific prefix.
+
+#### Setup
+
+* Ensure that TidyHQ credentials have been set in `config.json`
+
+#### Running
+
+`add_groups.py` and follow the prompts.
+
 ### Download files sent to a Slack channel
 
 Allow users to submit files in a slack channel and ingest them into other applications

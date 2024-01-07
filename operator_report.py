@@ -58,12 +58,12 @@ if len(sys.argv) < 2:
 report_name = sys.argv[1]
 
 if report_name == "all":
-    report = []
+    deduped_reports = []
     for report in reports:
         for group in reports[report]:
-            if group not in report:
-                report.append(group)
-
+            if group not in deduped_reports:
+                deduped_reports.append(group)
+    report = deduped_reports
 elif report_name not in reports:
     print(f"Report {report_name} not found in file")
     sys.exit(1)

@@ -117,7 +117,7 @@ Matches TidyHQ contacts with Slack user accounts based on registration email. On
 
 ### Generate list of machine operators based on TidyHQ groups
 
-Formats a markdown table of approved operators based on whether a contact is in a configured TidyHQ group
+Formats a markdown table of approved operators based on whether a contact is in a configured TidyHQ group. Passing the special report name "all" will generate a report including a deduplicated list of all other reports.
 
 #### Setup
 
@@ -141,27 +141,36 @@ eg.
 ```bash
 #!/bin/bash
 
-page=~/committee/wiki/docs/reports/Laser_operators.md
+page_prefix=~/committee/wiki/docs/reports/
+page_suffix=_operators.md
 
 # Update wiki repo
 cd ~/committee/wiki/
 git fetch --all
 git reset --hard origin/main
 
+
+# Iterate over reports
+for report in laser metal wood printer all
+do
+page=$page_prefix${report^}$page_suffix
+
 # Purge existing report
 
 sed -i '11,$ d' $page
 
-# Add new report to end of page
-
+# Change to util directory so the report script can access machines.json
 cd ~/util
-python3 operator_report.py lasers >> "${page}"
 
-# Commit report if it's changed
+python3 operator_report.py $report >> "$page"
 
 cd ~/committee/wiki/
 git add $page
-git commit -m "Update laser operators from TidyHQ"
+git commit -m "Update $report operators from TidyHQ"
+
+done
+
+# Commit if there's been changes
 git push
 ```
 

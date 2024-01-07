@@ -129,6 +129,8 @@ Passing the special report name "all" will generate a report including a dedupli
 
 #### Running
 
+`operator_report.py` will output a list of possible reports including their contents with human readable names rather than just IDs. The script will exit with an error code to catch it being executed without a report name accidentally in automations.
+
 `operator_report.py report_name` will output a markdown formatted table. It explicitly does not include a "generated on" line so that it doesn't trigger unnecessary page changes.
 
 This can be used to push a report by:

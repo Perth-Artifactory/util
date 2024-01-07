@@ -53,6 +53,18 @@ with open("machines.json") as f:
 
 if len(sys.argv) < 2:
     print("Usage: python3 operator_report.py [report name]")
+
+    # Print a list of all reports if no report name is given and translate group IDs to names
+    print("Available reports:")
+    for report in reports:
+        print(f"{report}")
+        for group in reports[report]:
+            print(f"    {get_group_name(group)} ({group})")
+        print("")
+    print(
+        "You can also use 'all' to get a list of operators from all groups. Each group will only be listed once and specific groups can be excluded by adding them to the 'exclude' list in machines.json"
+    )
+
     sys.exit(1)
 
 report_name = sys.argv[1]

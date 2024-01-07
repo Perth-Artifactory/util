@@ -48,7 +48,7 @@ def get_group_info(id=None, name=None):
         desc_lines = group["description"].split("\n")
         for line in desc_lines:
             if "=" in line:
-                key, value = line.split("=")
+                key, value = line.split("=", maxsplit=1)
                 processed[key.strip()] = value.strip()
     name = group["label"].replace("Machine Operator - ", "")
     processed["name"] = name

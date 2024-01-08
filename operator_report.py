@@ -92,7 +92,11 @@ if len(sys.argv) < 2:
     for report in reports:
         print(f"{report}")
         for group in reports[report]:
-            print(f'    {get_group_info(group)["name"]} ({group})')
+            info = get_group_info(group)
+            print(f'\t{info["name"]} ({group})')
+            for field in info:
+                if field != "name":
+                    print(f"\t\t{field}: {info[field]}")
         print("")
     print(
         "You can also use 'all' to get a list of operators from all groups. Each group will only be listed once and specific groups can be excluded by adding them to the 'exclude' list in machines.json"

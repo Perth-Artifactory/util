@@ -149,6 +149,16 @@ for group in report:
             contacts_indexed[contact_name] = []
         contacts_indexed[contact_name].append(machine_name)
 
+# Cache and index machines by name
+machines_by_name = {}
+for machine in machines:
+    info = get_group_info(name=machine)
+    machines_by_name[info["name"]] = machine
+
+# Sort machines by name
+machines = sorted(machines, key=lambda x: machines_by_name[x])
+
+
 # Generate the report
 
 # Generate header
@@ -158,8 +168,10 @@ for machine in machines:
     if "url" in info:
         header += f'[{info["name"]}]({info["url"]}) {info.get("level","")}| '
     else:
-        header += f'{info["name"]} | '
+        header += f'{info["name"]} {info.get("level","")}| '
+
 lines = [header]
+
 
 # Add separator
 lines.append(f'| --- | {" | ".join(["---"] * len(machines))} |')

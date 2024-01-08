@@ -152,7 +152,7 @@ header = "| Operator | "
 for machine in machines:
     info = get_group_info(name=machine)
     if "url" in info:
-        header += f'[{info["name"]}]({info["url"]}) | '
+        header += f'[{info["name"]}]({info["url"]}) {info.get("level","")}| '
     else:
         header += f'{info["name"]} | '
 lines = [header]

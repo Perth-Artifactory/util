@@ -128,6 +128,7 @@ Passing the special report name "all" will generate a report including a dedupli
   * Configure at least one report. Report names should be alphanumeric.
   * Groups in TidyHQ that have a description set will be parsed for information. Each provided parameter should be on a new line and presented as `key=value`. Supported info is:
     * `url` = When this group appears as the header to a column it will be linked to this page. No checking is done on the content of the field so it supports internal/external/relative/absolute links.
+    * `level` = Included after the name of a group/tool if present. Field can include unicode characters eg 🔴🟡🟢
 
 #### Running
 

@@ -140,8 +140,10 @@ except requests.exceptions.RequestException as e:
 # Index by contact instead
 contacts_indexed = {}
 machines = []
+
 for group in report:
-    machine_name = get_group_info(group)["name"]
+    info = get_group_info(group)
+    machine_name = info["name"]
     machines.append(machine_name)
     for contact in find_users_in_group(group):
         contact_name = format_user(contact)

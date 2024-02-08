@@ -152,3 +152,16 @@ Generate membership numbers for a particular date
 #### Running
 
 * `tidyhq_membership_snapshot.py`
+
+### Notify slack channel when a receipt has been submitted to Paperless-NGX
+
+#### Setup
+
+* Note this script will install `requests` and `slack_bolt` itself. This allows it to be more easily deployed with a Paperless install deployed via Docker.
+* Ensure that a Slack bot token and channel has been set in `config.json` OR directly in the script
+* The URLs are currently hardcoded, update as desired.
+* Point Paperless-NGX to the script via [PAPERLESS_POST_CONSUME_SCRIPT](https://docs.paperless-ngx.com/advanced_usage/#post-consume-script)
+
+#### Running
+
+Triggered automatically

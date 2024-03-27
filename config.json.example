@@ -7,7 +7,13 @@
         "status": {
             "Member": ":+1:",
             "Committee": ":+1:"
-        }
+        },
+        "status_override": [
+            {
+                "user": "UABC",
+                "status": "Member"
+            }
+        ]
     },
     "tidyhq": {
         "token": "CHANGEME",

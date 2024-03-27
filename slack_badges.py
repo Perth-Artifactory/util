@@ -144,3 +144,10 @@ for tidyhq_user in tidyhq_users:
         else:
             logging.info(f"Setting badge for {name} as member")
             set_badge(slack_id=tidyhq_user, text="Member")
+
+# Process overrides
+for override in config["slack"].get("status_override"):
+    set_badge(slack_id=override["user"], text=override["status"])
+    logging.info(
+        f'Setting badge for {override["user"]} as {override["status"]} due to a hardcoded override. (config.json)'
+    )

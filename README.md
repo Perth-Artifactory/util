@@ -172,6 +172,7 @@ Triggered automatically
 
 * Ensure that a Slack user token has been set in `config.json`
 * Ensure that group/emoji mappings are configured
+* Set any status overrides as required. These will be applied after all automatic statuses
 * Run via cron
 
 #### Running

@@ -1,8 +1,29 @@
-{"slack":{"bot_token":"xoxb-",
-          "app_token":"xapp-",
-          "notification_channel":"C"},
- "tidyhq":{"token":"",
-           "ids":{"slack":""}},
- "google":{"calendar_id":"@group.calendar.google.com"},
- "debug":true,
- "download_dir":"./"}
+ {
+    "slack": {
+        "bot_token": "xoxb-",
+        "user_token": "xoxp-",
+        "app_token": "xapp-1-",
+        "notification_channel": "CXXX",
+        "status": {
+            "Member": ":+1:",
+            "Committee": ":+1:"
+        }
+    },
+    "tidyhq": {
+        "token": "CHANGEME",
+        "ids": {
+            "slack": "abcd",
+            "members": [
+                123
+            ],
+            "committee": [
+                456
+            ]
+        }
+    },
+    "google": {
+        "calendar_id": "XXX@group.calendar.google.com"
+    },
+    "debug": true,
+    "download_dir": "./"
+}

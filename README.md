@@ -165,3 +165,19 @@ Generate membership numbers for a particular date
 #### Running
 
 Triggered automatically
+
+### Set Slack status based on TidyHQ groups
+
+#### Setup
+
+* Ensure that a Slack user token has been set in `config.json`
+* Ensure that group/emoji mappings are configured
+* Run via cron
+
+#### Running
+
+This script assumes that it is the definitive source of truth for Slack statuses. As such the first thing it will do is purge all statuses it disagrees with. This can take some time.
+
+Slack rate limiting means that the script can only change around 20 statuses per minute, be mindful when considering running this via cron etc.
+
+`slack_badges.py`

@@ -26,7 +26,7 @@ def get_tidyhq() -> dict[Any, Any] | Literal[False]:
             if field["id"] == config["tidyhq"]["ids"]["slack"] and field["value"]:
                 in_slack = True
         if not in_slack:
-            c[contact["email_address"]] = contact
+            c[normalise_email(contact["email_address"])] = contact
     return c
 
 
@@ -36,7 +36,7 @@ def get_slack():
     for user in r.data["members"]:  # type: ignore
         email: str | Literal[False] = user["profile"].get("email")  # type: ignore
         if email:
-            c[email] = {  # type: ignore
+            c[normalise_email(email)] = {  # type: ignore
                 "id": user["id"],
                 "name": user["profile"].get("real_name_normalized"),  # type: ignore
             }
@@ -108,6 +108,31 @@ def notify_slack(slack_user: dict[str, Any], tidyhq_user: dict[str, Any], method
     )
 
 
+def normalise_email(email: str) -> str:
+    # Sometimes this function will be passed things that aren't strings
+    if type(email) is not str:
+        print(f"Got {email} of type {type(email)}")
+        return email
+
+    # split into user and domain
+    user, domain = email.split("@")
+
+    # Remove dots from user
+    user = user.replace(".", "")
+
+    # Remove everything after a plus but keep the domain
+    if "+" in user:
+        user = user.split("+")[0]
+
+    # Rejoin user and domain
+    email = f"{user}@{domain}"
+
+    # Lowercase
+    email = email.lower()
+
+    return email
+
+
 # load config from config.json
 with open("config.json", "r") as f:
     config: dict[str, Any] = json.load(f)
@@ -123,7 +148,9 @@ app = App(token=config["slack"]["bot_token"])
 
 # Get info for our Slack connection
 slack_info = app.client.auth_test()  # type: ignore
-logging.info(f'Connected to Slack as "{slack_info["user"]} with ID {slack_info["user_id"]}')
+logging.info(
+    f'Connected to Slack as "{slack_info["user"]} with ID {slack_info["user_id"]}'
+)
 
 logging.info("Getting Slack users...")
 slack_users = get_slack()

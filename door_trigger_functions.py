@@ -16,6 +16,11 @@ def turn_on_air_purifier(message, app, config):
 
     if response.status_code in [200, 201]:
         current_level = response.json()["state"]
+        try:
+            current_level = int(current_level)
+        except ValueError:
+            print("Failed to parse air purifier level, assuming off")
+            current_level = 0
         print(f"Current air purifier level: {current_level}")
         if current_level < 2:
             payload = {"entity_id": "fan.design_purifier", "percentage": 67}

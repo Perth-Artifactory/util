@@ -57,7 +57,7 @@ def elab_lights(message, app, config):
 
 
 # function tester
-if __name__ == "main":
+if __name__ == "__main__":
     print("Select a function to test:")
     print("1. turn_on_air_purifier")
     print("2. elab_lights")

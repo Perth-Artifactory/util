@@ -23,7 +23,7 @@ def turn_on_air_purifier(message, app, config):
             current_level = 0
         print(f"Current air purifier level: {current_level}")
         if current_level < 2:
-            payload = {"entity_id": "fan.design_purifier", "percentage": 67}
+            payload = {"entity_id": "fan.design_purifier", "percentage": 65}
 
             response = requests.post(
                 url + "services/fan/turn_on", headers=headers, json=payload

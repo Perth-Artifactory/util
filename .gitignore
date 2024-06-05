@@ -133,3 +133,4 @@ events.json
 google.secret.json
 token.json
 machines.json
+trigger_patterns.json

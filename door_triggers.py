@@ -29,7 +29,7 @@ with open("trigger_patterns.json", "r") as f:
     patterns = json.load(f)
 
 for pattern in patterns:
-    for action in patterns[pattern]:
+    for action in patterns[pattern]["functions"]:
         if action not in func_map:
             raise ValueError(f"Action '{action}' not found in function map")
 
@@ -57,8 +57,18 @@ def handle_message(message, say):
         for pattern in patterns:
             if pattern in body_string:
                 print(f"Trigger pattern '{pattern}' detected!")
-                for action in patterns[pattern]:
+                # Run the functions associated with the pattern
+                for action in patterns[pattern]["functions"]:
                     func_map[action](message=message, app=app, config=config)
+                # Send a notification to each user in the notify list
+                for user in patterns[pattern]["notify"]:
+                    # Open a conversation with the user
+                    conversation = app.client.conversations_open(users=user)
+                    # Send a message to the user
+                    app.client.chat_postMessage(
+                        channel=conversation["channel"]["id"],
+                        text=f"{pattern} was detected in <#{config['slack']['trigger_channel']}>.",
+                    )
 
 
 # Start the app

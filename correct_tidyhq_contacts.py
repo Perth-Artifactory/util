@@ -107,6 +107,11 @@ if "--cron" in sys.argv:
             if contact["nick_name"].lower() == contact["first_name"].lower():
                 corrections["nick_name"] = ""
 
+        # Check if their nickname has whitespace at the end
+        if type(contact["nick_name"]) == str and contact["nick_name"] != "":
+            if contact["nick_name"][-1] == " ":
+                corrections["nick_name"] = contact["nick_name"].strip()
+
         if corrections:
             # send corrected data to TidyHQ
             r = requests.put(

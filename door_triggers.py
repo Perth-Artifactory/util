@@ -8,6 +8,19 @@ import sys
 from pprint import pprint
 import door_trigger_functions as trigger_functions
 
+
+def load_patterns():
+    with open("trigger_patterns.json", "r") as f:
+        patterns = json.load(f)
+
+    for pattern in patterns:
+        for action in patterns[pattern]["functions"]:
+            if action not in func_map:
+                raise ValueError(f"Action '{action}' not found in function map")
+
+    return patterns
+
+
 # Check for --debug flag
 if len(sys.argv) > 1 and "--debug" in sys.argv:
     logging.basicConfig(level=logging.DEBUG)
@@ -25,13 +38,7 @@ func_map = {
 }
 
 # Load patterns from file
-with open("trigger_patterns.json", "r") as f:
-    patterns = json.load(f)
-
-for pattern in patterns:
-    for action in patterns[pattern]["functions"]:
-        if action not in func_map:
-            raise ValueError(f"Action '{action}' not found in function map")
+patterns = load_patterns()
 
 # Initiate Slack client
 app = App(token=config["slack"]["bot_token"])
@@ -48,7 +55,8 @@ def handle_message(message, say):
         message["channel"] == config["slack"]["trigger_channel"]
         and "subtype" not in message
     ):
-        # pprint(message)
+        # Reload patterns from file
+        patterns = load_patterns()
 
         # Rather than trying to pull all text from the various sections of the message (blocks, text, attachments, etc) we can just pull the text from everywhere
         body_string = json.dumps(message)

@@ -58,6 +58,14 @@ def get_tidyhq():
 def get_slack():
     r = app.client.users_list()  # type: ignore
     c = {}
+    while r.data.get("response_metadata", {}).get("next_cursor"):  # type: ignore
+        for user in r.data["members"]:  # type: ignore
+            if not user["is_bot"] and user["id"] != "USLACKBOT":
+                c[user["id"]] = {
+                    "emoji": user["profile"].get("status_emoji", False),
+                    "text": user["profile"].get("status_text", False),
+                }
+        r = app.client.users_list(cursor=r.data["response_metadata"]["next_cursor"])  # type: ignore
     for user in r.data["members"]:  # type: ignore
         if not user["is_bot"] and user["id"] != "USLACKBOT":
             c[user["id"]] = {
@@ -121,6 +129,12 @@ for slack_user in slack_users:
 
 for tidyhq_user in tidyhq_users:
     name = f'{tidyhq_users[tidyhq_user]["name"]} ({tidyhq_user}/{tidyhq_users[tidyhq_user]["id"]})'
+
+    # Check if user is present in both systems
+    if tidyhq_user not in slack_users:
+        logging.warning(f"{name} is in TidyHQ but not in Slack")
+        continue
+
     if tidyhq_users[tidyhq_user]["committee"]:
         # Check if the user already has the correct title
         if (

@@ -33,6 +33,15 @@ def get_tidyhq() -> dict[Any, Any] | Literal[False]:
 def get_slack():
     r = app.client.users_list()  # type: ignore
     c: dict[str, dict[str, str]] = {}
+    while r.data.get("response_metadata", {}).get("next_cursor"):  # type: ignore
+        for user in r.data["members"]:  # type: ignore
+            email: str | Literal[False] = user["profile"].get("email")  # type: ignore
+            if email:
+                c[normalise_email(email)] = {  # type: ignore
+                    "id": user["id"],
+                    "name": user["profile"].get("real_name_normalized"),  # type: ignore
+                }
+        r = app.client.users_list(cursor=r.data["response_metadata"]["next_cursor"])  # type: ignore
     for user in r.data["members"]:  # type: ignore
         email: str | Literal[False] = user["profile"].get("email")  # type: ignore
         if email:

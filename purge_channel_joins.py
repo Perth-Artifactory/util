@@ -2,9 +2,9 @@
 import json
 import logging
 import sys
+import time
 from datetime import datetime
 from pprint import pprint
-import time
 
 from slack_bolt import App
 
@@ -26,7 +26,7 @@ slack_info = app.client.auth_test()  # type: ignore
 print(f'Connected to Slack as "{slack_info["user"]}" with ID {slack_info["user_id"]}')
 
 # Get all activity in the channel
-channel_id = "C069Q91GQGY"
+channel_id = "C01J9C6LHE1"
 response = app.client.conversations_history(channel=channel_id, limit=999)
 messages = response["messages"]
 # pprint(messages)
@@ -55,8 +55,6 @@ for message in messages:
                 print("Rate limited, waiting 1 minute")
                 time.sleep(60)
                 response = app.client.chat_delete(channel=channel_id, ts=message["ts"])
-            else:
-                raise e
         continue
 
     # Delete messages where the root message has been deleted
@@ -84,39 +82,3 @@ for message in messages:
                 else:
                     raise e
         continue
-
-    # Skip messages that are less than two weeks old
-    timestamp = datetime.fromtimestamp(float(message["ts"]))
-    if (datetime.now() - timestamp).days < 14:
-        print(
-            f"Skipping message from {name} ({message['user']}) as it is less than two weeks old"
-        )
-        continue
-
-    # Skip messages from specific user
-    if message["user"] in ["UC6T4U150"]:
-        print(f"Skipping message from protected user")
-        continue
-
-    # Tell us about the message
-    print(
-        f'Message from {name} ({message["user"]}) at {message["ts"]}: "{message["text"]}"'
-    )
-    choice = input("Delete this message? (y/N/i) ")
-    # choice = "n"
-    if choice == "y":
-        try:
-            response = app.client.chat_delete(channel=channel_id, ts=message["ts"])
-        except Exception as e:
-            if "ratelimited" in str(e):
-                print("Rate limited, waiting 1 minute")
-                time.sleep(60)
-                response = app.client.chat_delete(channel=channel_id, ts=message["ts"])
-            else:
-                raise e
-        print(f"Deleted message from {name} ({message['user']})")
-
-    elif choice == "i":
-        pprint(message)
-    else:
-        print("Skipping")

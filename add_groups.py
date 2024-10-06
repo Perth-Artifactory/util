@@ -19,7 +19,7 @@ r = requests.get(
     params={"access_token": config["tidyhq"]["token"]},
 )
 
-existing_groups = r.json()
+existing_groups: dict = r.json()
 
 print(f"Found {len(existing_groups)} groups")
 prefix_groups = 0

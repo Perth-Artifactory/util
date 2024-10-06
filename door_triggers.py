@@ -6,12 +6,14 @@ from slack_bolt.adapter.socket_mode import SocketModeHandler
 import logging
 import sys
 from pprint import pprint
+
+from slack_sdk.web.slack_response import SlackResponse
 import door_trigger_functions as trigger_functions
 
 
-def load_patterns():
+def load_patterns() -> dict:
     with open("trigger_patterns.json", "r") as f:
-        patterns = json.load(f)
+        patterns: dict = json.load(f)
 
     for pattern in patterns:
         for action in patterns[pattern]["functions"]:
@@ -29,7 +31,7 @@ else:
 
 # Load config from file
 with open("config.json", "r") as f:
-    config = json.load(f)
+    config: dict = json.load(f)
 
 # Map of trigger patterns to functions
 func_map = {
@@ -44,7 +46,7 @@ patterns = load_patterns()
 app = App(token=config["slack"]["bot_token"])
 
 # Get info for our Slack connection
-slack_info = app.client.auth_test()  # type: ignore
+slack_info: SlackResponse = app.client.auth_test()
 print(f'Connected to Slack as "{slack_info["user"]}" with ID {slack_info["user_id"]}')
 
 
@@ -59,7 +61,7 @@ def handle_message(message, say):
         patterns = load_patterns()
 
         # Rather than trying to pull all text from the various sections of the message (blocks, text, attachments, etc) we can just pull the text from everywhere
-        body_string = json.dumps(message)
+        body_string: str = json.dumps(message)
 
         # Check if the message contains any of the trigger patterns
         for pattern in patterns:
@@ -71,7 +73,9 @@ def handle_message(message, say):
                 # Send a notification to each user in the notify list
                 for user in patterns[pattern]["notify"]:
                     # Open a conversation with the user
-                    conversation = app.client.conversations_open(users=user)
+                    conversation: SlackResponse = app.client.conversations_open(
+                        users=user
+                    )
                     # Send a message to the user
                     app.client.chat_postMessage(
                         channel=conversation["channel"]["id"],

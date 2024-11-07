@@ -55,7 +55,7 @@ for story in stories:
     tagged = False
     for tag in story.tags:
         if tag[0] == "bot-managed":
-            print(f"Story {story.subject} includes the tag 'bot'")
+            print(f"Story {story.subject} includes the tag 'bot-managed'")
             tagged = True
 
     if not tagged:

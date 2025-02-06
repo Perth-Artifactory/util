@@ -8,7 +8,7 @@ from slack_bolt.adapter.socket_mode import SocketModeHandler
 from slack_logger import SlackFormatter, SlackHandler
 import logging
 
-with open("config.json","r") as f:
+with open("config.json", "r") as f:
     config: dict = json.load(f)
 
 # Set up logging
@@ -20,6 +20,7 @@ else:
 
 # Initializes your app with your bot token and signing secret
 app = App(token=config["slack"]["bot_token"])
+
 
 # Listens for channel creation events
 @app.event("channel_created")
@@ -36,10 +37,11 @@ def channel_created(event):
         # send a message to the channel when it is created
         app.client.chat_postMessage(
             channel=config["slack"]["notification_channel"],
-            text=f"New channel created: <#{channel_id}|{channel_name}> by <@{channel_creator}>"
+            text=f"New channel created: <#{channel_id}|{channel_name}> by <@{channel_creator}>",
         )
-    except:
+    except Exception:
         logging.error("Could not send message")
+
 
 if __name__ == "__main__":
     handler = SocketModeHandler(app, config["slack"]["app_token"])

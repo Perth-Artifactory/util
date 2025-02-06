@@ -1,10 +1,13 @@
 import json
+import logging
+import sys
+import time
+from pprint import pprint
+
 import requests
 from slack_bolt import App
-import sys
-import logging
-from pprint import pprint
-import time
+
+import errors
 
 # Check for --debug flag
 if len(sys.argv) > 1 and "--debug" in sys.argv:
@@ -22,7 +25,7 @@ def get_tidyhq():
         )
         contacts = r.json()
     except requests.exceptions.RequestException:
-        logging.error("Could not reach TidyHQ")
+        logging.error(errors.tidyhq_connect)
         return False
     c = {}
     for contact in contacts:

@@ -7,6 +7,8 @@ from typing import Any
 
 import requests
 
+import errors
+
 
 def correct_name(name: str) -> str:
     # Takes a name and returns a version with the first letter capitalised and whitespace trimmed
@@ -77,7 +79,7 @@ try:
     contacts: list[dict[str, Any]] = r.json()
     logging.info(f"Got {len(contacts)} contacts from TidyHQ")
 except requests.exceptions.RequestException:
-    logging.error("Could not reach TidyHQ")
+    logging.error(errors.tidyhq_connect)
     sys.exit(1)
 
 # Check for --cron flag

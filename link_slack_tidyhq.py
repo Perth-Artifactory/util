@@ -6,6 +6,8 @@ from typing import Any, Literal
 import requests
 from slack_bolt import App
 
+import errors
+
 
 # Get a list of contacts from TidyHQ that are not linked to a Slack account
 def get_tidyhq() -> dict[Any, Any] | Literal[False]:
@@ -17,7 +19,7 @@ def get_tidyhq() -> dict[Any, Any] | Literal[False]:
         )
         contacts: list[dict[str, Any]] = r.json()
     except requests.exceptions.RequestException:
-        logging.error("Could not reach TidyHQ")
+        logging.error(errors.tidyhq_connect)
         return False
     c: dict[str, dict[str, Any]] = {}
     for contact in contacts:
@@ -59,7 +61,7 @@ def get_tidyhq_memberships() -> list[dict[str, Any]] | Literal[False]:
             params={"access_token": config["tidyhq"]["token"]},
         )
     except requests.exceptions.RequestException:
-        logging.error("Could not reach TidyHQ")
+        logging.error(errors.tidyhq_connect)
         return False
     memberships = r.json()
     active: list[dict[str, Any]] = []
@@ -84,7 +86,7 @@ def link_accounts(tidyhq_id: str, slack_id: str) -> bool:
             return True
 
     except requests.exceptions.RequestException:
-        logging.error("Could not reach TidyHQ")
+        logging.error(errors.tidyhq_connect)
         return False
 
 

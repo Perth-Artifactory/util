@@ -109,7 +109,7 @@ def notify_slack(contact_id, days, alarm=False):
         slack_data = {
             "text": f":warning: <https://artifactory.tidyhq.com/contacts/{contact_id}|{member['first_name']} {member['last_name']}>'s membership has expired.{billing_group}\nThis is a bad thing that requires manual intervention. (Unless they've just put their membership on hold/resigned etc)\nReact to this message with a :+1: once the situation has been resolved."
         }
-    r = requests.post(
+    requests.post(
         webhook_url,
         data=json.dumps(slack_data),
         headers={"Content-Type": "application/json"},

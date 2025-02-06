@@ -4,32 +4,41 @@ from pprint import pprint
 from datetime import datetime
 import sys
 
-with open("config.json","r") as f:
+with open("config.json", "r") as f:
     config = json.load(f)
-with open("events.json","r") as f:
+with open("events.json", "r") as f:
     reports = json.load(f)
 
-def get_event(event_id: str =""):
+
+def get_event(event_id: str = ""):
     if event_id:
         try:
-            r = requests.get(f"https://api.tidyhq.com/v1/events/{event_id}",params={"access_token":config["tidyhq"]["token"]})
+            r = requests.get(
+                f"https://api.tidyhq.com/v1/events/{event_id}",
+                params={"access_token": config["tidyhq"]["token"]},
+            )
             if r.status_code == 200:
                 event = r.json()
                 return event
             return False
-        except requests.exceptions.RequestException as e:
+        except requests.exceptions.RequestException:
             return False
 
-def get_tickets(event_id: str =""):
+
+def get_tickets(event_id: str = ""):
     if event_id:
         try:
-            r = requests.get(f"https://api.tidyhq.com/v1/events/{event_id}/tickets/",params={"access_token":config["tidyhq"]["token"]})
+            r = requests.get(
+                f"https://api.tidyhq.com/v1/events/{event_id}/tickets/",
+                params={"access_token": config["tidyhq"]["token"]},
+            )
             if r.status_code == 200:
                 tickets = r.json()
                 return tickets
             return False
-        except requests.exceptions.RequestException as e:
+        except requests.exceptions.RequestException:
             return False
+
 
 if len(sys.argv) > 1:
     report_id = sys.argv[1]
@@ -43,6 +52,8 @@ for event in reports[report_id]:
     e = get_event(event_id=event)
     if e:
         tickets = get_tickets(event_id=event)
+        if not tickets:
+            continue
         total = 0
         tlines = ""
         for ticket in tickets:
@@ -54,6 +65,6 @@ for event in reports[report_id]:
     <td><ul>{tlines}</ul></td>
     <td>${total}</td>
     </tr>"""
-with open("event_report_template.html","r") as f:
+with open("event_report_template.html", "r") as f:
     template = f.read()
-print(template.format(lines,datetime.now()))
+print(template.format(lines, datetime.now()))

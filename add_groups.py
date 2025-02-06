@@ -15,7 +15,7 @@ if " - " not in prefix:
 
 # get existing groups
 r = requests.get(
-    f"https://api.tidyhq.com/v1/groups",
+    "https://api.tidyhq.com/v1/groups",
     params={"access_token": config["tidyhq"]["token"]},
 )
 
@@ -52,7 +52,7 @@ for group in groups:
         else:
             print(f"Creating group {final_name}")
             r = requests.post(
-                f"https://api.tidyhq.com/v1/groups",
+                "https://api.tidyhq.com/v1/groups",
                 params={"access_token": config["tidyhq"]["token"]},
                 json={"label": final_name},
             )

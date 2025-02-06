@@ -2,9 +2,11 @@
     "cSpell.words": [
         "automations",
         "Capitalise",
+        "creds",
         "deduped",
         "elab",
         "gcal",
+        "googleapiclient",
         "maxsplit",
         "preconfigured",
         "ratelimited",

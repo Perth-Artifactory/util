@@ -11,6 +11,7 @@
         "preconfigured",
         "ratelimited",
         "tidyhq",
+        "tlines",
         "USLACKBOT"
     ],
     "sonarlint.connectedMode.project": {

@@ -2,11 +2,13 @@
 import json
 import logging
 import sys
+import time
 from datetime import datetime
 from pprint import pprint
-import time
 
 from slack_bolt import App
+
+import errors
 
 # Check for --debug flag
 if len(sys.argv) > 1 and "--debug" in sys.argv:
@@ -52,7 +54,7 @@ for message in messages:
             response = app.client.chat_delete(channel=channel_id, ts=message["ts"])
         except Exception as e:
             if "ratelimited" in str(e):
-                print("Rate limited, waiting 1 minute")
+                print(errors.rate_limit)
                 time.sleep(60)
                 response = app.client.chat_delete(channel=channel_id, ts=message["ts"])
             else:
@@ -61,7 +63,7 @@ for message in messages:
 
     # Delete messages where the root message has been deleted
     if message["text"] == "This message was deleted.":
-        print(f"Deleting messages from deleted root message")
+        print("Deleting messages from deleted root message")
         # Get all replies to this message
         response = app.client.conversations_replies(
             channel=channel_id, ts=message["ts"]
@@ -76,7 +78,7 @@ for message in messages:
                 response = app.client.chat_delete(channel=channel_id, ts=reply["ts"])
             except Exception as e:
                 if "ratelimited" in str(e):
-                    print("Rate limited, waiting 1 minute")
+                    print(errors.rate_limit)
                     time.sleep(60)
                     response = app.client.chat_delete(
                         channel=channel_id, ts=reply["ts"]
@@ -95,7 +97,7 @@ for message in messages:
 
     # Skip messages from specific user
     if message["user"] in ["UC6T4U150"]:
-        print(f"Skipping message from protected user")
+        print("Skipping message from protected user")
         continue
 
     # Tell us about the message
@@ -103,13 +105,12 @@ for message in messages:
         f'Message from {name} ({message["user"]}) at {message["ts"]}: "{message["text"]}"'
     )
     choice = input("Delete this message? (y/N/i) ")
-    # choice = "n"
     if choice == "y":
         try:
             response = app.client.chat_delete(channel=channel_id, ts=message["ts"])
         except Exception as e:
             if "ratelimited" in str(e):
-                print("Rate limited, waiting 1 minute")
+                print(errors.rate_limit)
                 time.sleep(60)
                 response = app.client.chat_delete(channel=channel_id, ts=message["ts"])
             else:

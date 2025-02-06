@@ -146,7 +146,6 @@ for tidyhq_user in tidyhq_users:
             == config["slack"]["status"]["Committee"]
         ):
             logging.debug(f"{name} is already marked as a committee member")
-            continue
         else:
             logging.info(f"Setting badge for {name} as committee")
             set_badge(slack_id=tidyhq_user, text="Committee")
@@ -157,7 +156,6 @@ for tidyhq_user in tidyhq_users:
             and slack_users[tidyhq_user]["emoji"] == config["slack"]["status"]["Member"]
         ):
             logging.debug(f"{name} is already marked as a member")
-            continue
         else:
             logging.info(f"Setting badge for {name} as member")
             set_badge(slack_id=tidyhq_user, text="Member")

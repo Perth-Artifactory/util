@@ -8,6 +8,8 @@ from pprint import pprint
 
 from slack_bolt import App
 
+import errors
+
 # Check for --debug flag
 if len(sys.argv) > 1 and "--debug" in sys.argv:
     logging.basicConfig(level=logging.DEBUG)
@@ -52,14 +54,14 @@ for message in messages:
             response = app.client.chat_delete(channel=channel_id, ts=message["ts"])
         except Exception as e:
             if "ratelimited" in str(e):
-                print("Rate limited, waiting 1 minute")
+                print(errors.rate_limit)
                 time.sleep(60)
                 response = app.client.chat_delete(channel=channel_id, ts=message["ts"])
         continue
 
     # Delete messages where the root message has been deleted
     if message["text"] == "This message was deleted.":
-        print(f"Deleting messages from deleted root message")
+        print("Deleting messages from deleted root message")
         # Get all replies to this message
         response = app.client.conversations_replies(
             channel=channel_id, ts=message["ts"]
@@ -74,11 +76,10 @@ for message in messages:
                 response = app.client.chat_delete(channel=channel_id, ts=reply["ts"])
             except Exception as e:
                 if "ratelimited" in str(e):
-                    print("Rate limited, waiting 1 minute")
+                    print(errors.rate_limit)
                     time.sleep(60)
                     response = app.client.chat_delete(
                         channel=channel_id, ts=reply["ts"]
                     )
                 else:
                     raise e
-        continue

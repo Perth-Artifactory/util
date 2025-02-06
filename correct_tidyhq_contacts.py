@@ -23,11 +23,11 @@ def correct_name(name: str) -> str:
             word = word[0].upper() + word[1:]
 
             # Special case for Mc
-            if word[:2] == "Mc" and len(word) > 2:
+            if word.startswith("Mc") and len(word) > 2:
                 word = word[:2] + word[2].upper() + word[3:]
 
             # special case for Mac
-            if word[:3] == "Mac" and len(word) > 6:
+            if word.startswith("Mac") and len(word) > 6:
                 word = word[:3] + word[3].upper() + word[4:]
 
             # Special case for '
@@ -99,18 +99,21 @@ if "--cron" in sys.argv:
 
         # Check if their nickname is just their first name
         if (
-            type(contact["nick_name"]) == str
+            isinstance(contact["nick_name"], str)
             and contact["nick_name"] != ""
-            and type(contact["first_name"]) == str
+            and isinstance(contact["first_name"], str)
             and contact["first_name"] != ""
         ):
             if contact["nick_name"].lower() == contact["first_name"].lower():
                 corrections["nick_name"] = ""
 
         # Check if their nickname has whitespace at the end
-        if type(contact["nick_name"]) == str and contact["nick_name"] != "":
-            if contact["nick_name"][-1] == " ":
-                corrections["nick_name"] = contact["nick_name"].strip()
+        if (
+            isinstance(contact["nick_name"], str)
+            and contact["nick_name"] != ""
+            and contact["nick_name"].endswith(" ")
+        ):
+            corrections["nick_name"] = contact["nick_name"].strip()
 
         if corrections:
             # send corrected data to TidyHQ
@@ -137,9 +140,9 @@ else:
 
         # Check if their nickname is just their first name
         if (
-            type(contact["nick_name"]) == str
+            isinstance(contact["nick_name"], str)
             and contact["nick_name"] != ""
-            and type(contact["first_name"]) == str
+            and isinstance(contact["first_name"], str)
             and contact["first_name"] != ""
         ):
             if contact["nick_name"].lower() == contact["first_name"].lower():

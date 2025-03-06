@@ -10,6 +10,7 @@
         "GQGY",
         "maxsplit",
         "preconfigured",
+        "pydub",
         "ratelimited",
         "tidyhq",
         "tlines",

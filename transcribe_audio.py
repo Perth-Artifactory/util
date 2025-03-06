@@ -22,7 +22,8 @@ with open("config.json", "r") as f:
     config = json.load(f)
 
 # Initiate OpenAI client
-openai_client = OpenAI(api_key=config["openai"]["api_key"])
+if config["slack"]["transcribe_calls"]:
+    openai_client = OpenAI(api_key=config["openai"]["api_key"])
 
 # Initiate Slack client as our user
 app = App(token=config["slack"]["user_token"])
@@ -103,9 +104,16 @@ for message in messages:
             mp3_io = io.BytesIO(voicemail)
             mp3_io.name = attachment["filename"].replace(".wav", ".mp3")
 
-            transcription: str = openai_client.audio.transcriptions.create(
-                model="whisper-1", file=mp3_io, response_format="text", language="en"
-            )
+            if config["slack"]["transcribe_calls"]:
+                transcription: str = openai_client.audio.transcriptions.create(
+                    model="whisper-1",
+                    file=mp3_io,
+                    response_format="text",
+                    language="en",
+                )
+                transcription = f"\n\n{transcription}"
+            else:
+                transcription = ""
 
     # Generate a human readable timestamp for the message
     ts: str = message["ts"].split(".")[0]
@@ -147,7 +155,7 @@ for message in messages:
                     "type": "section",
                     "text": {
                         "type": "mrkdwn",
-                        "text": f"New voicemail from {linked_number}\n\n{transcription}",
+                        "text": f"New voicemail from {linked_number}{transcription}",
                     },
                 },
                 {

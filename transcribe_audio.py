@@ -168,6 +168,7 @@ for message in messages:
                     ],
                 },
             ],
+            icon_emoji=":phone:",
             username="Celia",
         )
 
@@ -202,6 +203,7 @@ for message in messages:
                 },
             ],
             icon_emoji=":phone:",
+            username="Celia",
         )
         posted = True
 

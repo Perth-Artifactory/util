@@ -169,7 +169,7 @@ for message in messages:
                 },
             ],
             icon_emoji=":phone:",
-            username="Celia",
+            username="Celia | Phone Assistant",
         )
 
         # Complete the file upload and add the file to the message
@@ -203,7 +203,7 @@ for message in messages:
                 },
             ],
             icon_emoji=":phone:",
-            username="Celia",
+            username="Celia | Phone Assistant",
         )
         posted = True
 

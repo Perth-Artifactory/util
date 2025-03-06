@@ -181,7 +181,7 @@ for message in messages:
         posted = True
 
     elif call_type == "missed":
-        posting_app.client.chat_postMessage(
+        notification_message = posting_app.client.chat_postMessage(
             channel=channel_id,
             text=f"Missed call from {phone_number}",
             blocks=[
@@ -209,4 +209,10 @@ for message in messages:
 
     # Delete the email
     if posted:
+        # Pin the root message to the channel
+        posting_app.client.pins_add(
+            channel=channel_id, timestamp=notification_message["ts"]
+        )
+
+        # Delete the email
         app.client.chat_delete(channel=channel_id, ts=message["ts"])

@@ -94,6 +94,19 @@ def set_badge(slack_id, text=None):
     }
 
     app.client.users_profile_set(user=slack_id, profile=profile)
+
+    if text:
+        message = f"Set badge for <@{slack_id}> to {emoji} {text}"
+    else:
+        message = f"Removed {text} badge from <@{slack_id}>"
+    # Post a message to the notification channel
+    bot_app.client.chat_postMessage(
+        channel=config["slack"]["notification_channel"],
+        text=message,
+        username="Slack Badges",
+        icon_emoji=":artifactory:",
+    )
+
     # This method is rated to ~30 requests per minute, so we need to sleep
     time.sleep(3)
 
@@ -104,6 +117,8 @@ with open("config.json", "r") as f:
 
 # Initiate Slack client
 app = App(token=config["slack"]["user_token"])
+bot_app = App(token=config["slack"]["bot_token"])
+
 
 # Get info for our Slack connection
 slack_info = app.client.auth_test()  # type: ignore
@@ -121,6 +136,10 @@ logging.debug(f"Got {len(tidyhq_users)} TidyHQ users")
 
 # Iterate over Slack users to find ones that have a status when we don't expect it
 for slack_user in slack_users:
+    # Skip users in the override list
+    if slack_user in [x["user"] for x in config["slack"].get("status_override", [])]:
+        continue
+
     # Users that aren't in tidyhq wouldn't get their status fixed in the next step so strip them now
     if slack_user not in tidyhq_users:
         # Check if they have a status to remove
@@ -131,7 +150,7 @@ for slack_user in slack_users:
             set_badge(slack_id=slack_user, text=None)
 
 for tidyhq_user in tidyhq_users:
-    name = f'{tidyhq_users[tidyhq_user]["name"]} ({tidyhq_user}/{tidyhq_users[tidyhq_user]["id"]})'
+    name = f"{tidyhq_users[tidyhq_user]['name']} ({tidyhq_user}/{tidyhq_users[tidyhq_user]['id']})"
 
     # Check if user is present in both systems
     if tidyhq_user not in slack_users:
@@ -147,7 +166,7 @@ for tidyhq_user in tidyhq_users:
         ):
             logging.debug(f"{name} is already marked as a committee member")
         else:
-            logging.info(f"Setting badge for {name} as committee")
+            logging.info(f"Setting badge for {name} to committee")
             set_badge(slack_id=tidyhq_user, text="Committee")
     elif tidyhq_users[tidyhq_user]["member"]:
         # Check if the user already has the correct title
@@ -157,12 +176,23 @@ for tidyhq_user in tidyhq_users:
         ):
             logging.debug(f"{name} is already marked as a member")
         else:
-            logging.info(f"Setting badge for {name} as member")
+            logging.info(f"Setting badge for {name} to member")
             set_badge(slack_id=tidyhq_user, text="Member")
 
 # Process overrides
 for override in config["slack"].get("status_override"):
-    set_badge(slack_id=override["user"], text=override["status"])
-    logging.info(
-        f'Setting badge for {override["user"]} as {override["status"]} due to a hardcoded override. (config.json)'
-    )
+    if override["user"] not in slack_users:
+        logging.warning(f"User {override['user']} not found in Slack")
+        continue
+    # Check if the user already has the correct title
+    if (
+        slack_users[override["user"]]["text"] == override["status"]
+        and slack_users[override["user"]]["emoji"]
+        == config["slack"]["status"][override["status"]]
+    ):
+        logging.debug(f"{override['user']} is already marked as {override['status']}")
+    else:
+        set_badge(slack_id=override["user"], text=override["status"])
+        logging.info(
+            f"Setting badge for {override['user']} as {override['status']} due to a hardcoded override. (config.json)"
+        )

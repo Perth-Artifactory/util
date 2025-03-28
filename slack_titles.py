@@ -104,7 +104,7 @@ for slack_user in slack_users:
 
     if slack_users[slack_user]["title"]:
         message = (
-            f'Removing title "{slack_users[slack_user]["title"]}" from {slack_user}'
+            f'Removing title "{slack_users[slack_user]["title"]}" from <@{slack_user}>'
         )
         logging.info(message)
 
@@ -128,7 +128,9 @@ for tidyhq_user in tidyhq_users:
         continue
 
     # Set the title
-    message = f'Setting title "{tidyhq_users[tidyhq_user]["title"]}" for {tidyhq_users[tidyhq_user]["name"]}'
+    message = (
+        f'Setting title "{tidyhq_users[tidyhq_user]["title"]}" for <@{tidyhq_user}>'
+    )
     logging.info(message)
     r = app.client.users_profile_set(  # type: ignore
         user=tidyhq_user,

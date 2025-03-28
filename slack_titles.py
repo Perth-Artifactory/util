@@ -129,7 +129,7 @@ for tidyhq_user in tidyhq_users:
 
     # Set the title
     message = (
-        f'Setting title "{tidyhq_users[tidyhq_user]["title"]}" for <@{tidyhq_user}>'
+        f'Setting title for <@{tidyhq_user}> to "{tidyhq_users[tidyhq_user]["title"]}"'
     )
     logging.info(message)
     r = app.client.users_profile_set(  # type: ignore

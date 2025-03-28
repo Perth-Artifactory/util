@@ -88,13 +88,18 @@ elif "--set" in sys.argv:
 
     changes = False
 
-    for slack_id in tidyhq_users:
-        if new_titles[slack_id]["title"] == tidyhq_users[slack_id]["title"]:
-            continue
+    for slack_id in new_titles:
+        # Skip the title check if the user previous had no title
+        if slack_id in tidyhq_users:
+            if new_titles[slack_id]["title"] == tidyhq_users[slack_id]["title"]:
+                logging.debug(
+                    f"Skipping {new_titles[slack_id]['name']} ({slack_id}) as title is the same"
+                )
+                continue
 
         changes = True
 
-        user = tidyhq_users[slack_id]
+        user = new_titles[slack_id]
         logging.info(
             f"Setting title for {user['name']} ({slack_id}) to {user['title']} in TidyHQ"
         )
@@ -102,12 +107,11 @@ elif "--set" in sys.argv:
         r = requests.put(
             f"https://api.tidyhq.com/v1/contacts/{user['id']}",
             params={"access_token": config["tidyhq"]["token"]},
-            json={
-                "custom_fields": [
-                    {"id": config["tidyhq"]["ids"]["title"], "value": user["title"]}
-                ]
-            },
+            json={"custom_fields": {config["tidyhq"]["ids"]["title"]: user["title"]}},
         )
+        if r.status_code != 200:
+            logging.error(errors.tidyhq_update)
+            exit(1)
 
     if changes:
         logging.info("Changes made to TidyHQ. Use slack_titles.py to update Slack.")

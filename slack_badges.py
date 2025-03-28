@@ -29,6 +29,8 @@ def get_tidyhq():
         return False
     c = {}
     for contact in contacts:
+        if contact["id"] in config["slack"]["membership_ignore"]:
+            continue
         slack = ""
         for field in contact["custom_fields"]:
             if field["id"] == config["tidyhq"]["ids"]["slack"] and field["value"]:

@@ -103,15 +103,24 @@ for slack_user in slack_users:
         continue
 
     if slack_users[slack_user]["title"]:
-        logging.info(
+        message = (
             f'Removing title "{slack_users[slack_user]["title"]}" from {slack_user}'
         )
+        logging.info(message)
+
         r = app.client.users_profile_set(  # type: ignore
             user=slack_user, name="title", value=""
         )
         if not r["ok"]:
             logging.error(f"Failed to remove title from {slack_user}")
             logging.error(r)
+        else:
+            bot_app.client.chat_postMessage(
+                channel=config["slack"]["notification_channel"],
+                text=message,
+                username="Slack Titles",
+                icon_emoji=":scroll:",
+            )
 
 for tidyhq_user in tidyhq_users:
     # Check if their title is already correct
@@ -119,9 +128,8 @@ for tidyhq_user in tidyhq_users:
         continue
 
     # Set the title
-    logging.info(
-        f'Setting title "{tidyhq_users[tidyhq_user]["title"]}" for {tidyhq_users[tidyhq_user]["name"]}'
-    )
+    message = f'Setting title "{tidyhq_users[tidyhq_user]["title"]}" for {tidyhq_users[tidyhq_user]["name"]}'
+    logging.info(message)
     r = app.client.users_profile_set(  # type: ignore
         user=tidyhq_user,
         name="title",
@@ -130,3 +138,10 @@ for tidyhq_user in tidyhq_users:
     if not r["ok"]:
         logging.error(f"Failed to set title for {tidyhq_user}")
         logging.error(r)
+    else:
+        bot_app.client.chat_postMessage(
+            channel=config["slack"]["notification_channel"],
+            text=message,
+            username="Slack Titles",
+            icon_emoji=":scroll:",
+        )

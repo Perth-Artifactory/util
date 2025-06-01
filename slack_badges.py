@@ -42,6 +42,7 @@ def get_tidyhq():
             continue
 
         # Check if the user is a member
+        member_induction = False
         member = False
         committee = False
         for group in contact["groups"]:
@@ -49,6 +50,8 @@ def get_tidyhq():
                 member = True
             elif group["id"] in config["tidyhq"]["ids"]["committee"]:
                 committee = True
+            elif group["id"] in config["tidyhq"]["ids"]["member_induction"]:
+                member_induction = True
 
         if member or committee:
             c[slack] = {
@@ -56,6 +59,7 @@ def get_tidyhq():
                 "name": contact["display_name"],
                 "member": member,
                 "committee": committee,
+                "member_induction": member_induction,
             }
     return c
 
@@ -80,10 +84,13 @@ def get_slack():
     return c
 
 
-def set_badge(slack_id, text=None):
+def set_badge(slack_id, text=None, emoji=None):
     if not text:
         text = ""
         emoji = ""
+    elif emoji and text:
+        # Emoji is already set
+        pass
     elif text not in config["slack"]["status"]:
         sys.exit(f"Invalid status: {text}")
     else:
@@ -171,15 +178,20 @@ for tidyhq_user in tidyhq_users:
             logging.info(f"Setting badge for {name} to committee")
             set_badge(slack_id=tidyhq_user, text="Committee")
     elif tidyhq_users[tidyhq_user]["member"]:
+        # Check for a member induction
+        emoji = config["slack"]["status"]["Uninducted"]
+        if tidyhq_users[tidyhq_user]["member_induction"]:
+            emoji = config["slack"]["status"]["Member"]
+
         # Check if the user already has the correct title
         if (
             slack_users[tidyhq_user]["text"] == "Member"
-            and slack_users[tidyhq_user]["emoji"] == config["slack"]["status"]["Member"]
+            and slack_users[tidyhq_user]["emoji"] == emoji
         ):
             logging.debug(f"{name} is already marked as a member")
         else:
             logging.info(f"Setting badge for {name} to member")
-            set_badge(slack_id=tidyhq_user, text="Member")
+            set_badge(slack_id=tidyhq_user, text="Member", emoji=emoji)
 
 # Process overrides
 for override in config["slack"].get("status_override"):

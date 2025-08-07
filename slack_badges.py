@@ -45,6 +45,7 @@ def get_tidyhq():
         member_induction = False
         member = False
         committee = False
+        volunteer = False
         for group in contact["groups"]:
             if group["id"] in config["tidyhq"]["ids"]["members"]:
                 member = True
@@ -52,14 +53,17 @@ def get_tidyhq():
                 committee = True
             elif group["id"] in config["tidyhq"]["ids"]["member_induction"]:
                 member_induction = True
+            elif group["id"] in config["tidyhq"]["ids"]["volunteer"]:
+                volunteer = True
 
-        if member or committee:
+        if member or committee or volunteer:
             c[slack] = {
                 "id": contact["id"],
                 "name": contact["display_name"],
                 "member": member,
                 "committee": committee,
                 "member_induction": member_induction,
+                "volunteer": volunteer,
             }
     return c
 
@@ -166,32 +170,32 @@ for tidyhq_user in tidyhq_users:
         logging.warning(f"{name} is in TidyHQ but not in Slack")
         continue
 
+    emoji = None
+    title = None
+
     if tidyhq_users[tidyhq_user]["committee"]:
-        # Check if the user already has the correct title
-        if (
-            slack_users[tidyhq_user]["text"] == "Committee"
-            and slack_users[tidyhq_user]["emoji"]
-            == config["slack"]["status"]["Committee"]
-        ):
-            logging.debug(f"{name} is already marked as a committee member")
-        else:
-            logging.info(f"Setting badge for {name} to committee")
-            set_badge(slack_id=tidyhq_user, text="Committee")
+        emoji = config["slack"]["status"]["Committee"]
+        title = "Committee"
+    elif tidyhq_users[tidyhq_user]["volunteer"]:
+        emoji = config["slack"]["status"]["Volunteer"]
+        title = "Volunteer"
     elif tidyhq_users[tidyhq_user]["member"]:
         # Check for a member induction
         emoji = config["slack"]["status"]["Uninducted"]
         if tidyhq_users[tidyhq_user]["member_induction"]:
             emoji = config["slack"]["status"]["Member"]
+        title = "Member"
 
-        # Check if the user already has the correct title
+    if title:
+        # Check if the status is already set correctly
         if (
-            slack_users[tidyhq_user]["text"] == "Member"
+            slack_users[tidyhq_user]["text"] == title
             and slack_users[tidyhq_user]["emoji"] == emoji
         ):
-            logging.debug(f"{name} is already marked as a member")
+            logging.debug(f"{name} is already marked as {title}")
         else:
-            logging.info(f"Setting badge for {name} to member")
-            set_badge(slack_id=tidyhq_user, text="Member", emoji=emoji)
+            set_badge(slack_id=tidyhq_user, text=title, emoji=emoji)
+            logging.info(f"Setting badge for {name} as {title}")
 
 # Process overrides
 for override in config["slack"].get("status_override"):

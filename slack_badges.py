@@ -15,6 +15,12 @@ if len(sys.argv) > 1 and "--debug" in sys.argv:
 else:
     logging.basicConfig(level=logging.INFO)
 
+# Check for --quiet flag
+quiet = False
+if len(sys.argv) > 1 and "--quiet" in sys.argv:
+    quiet = True
+    logging.info("Running in quiet mode, no messages will be posted to Slack.")
+
 
 def get_tidyhq():
     logging.debug("Attempting to get contact dump from TidyHQ...")
@@ -113,12 +119,13 @@ def set_badge(slack_id, text=None, emoji=None):
     else:
         message = f"Removed {text} badge from <@{slack_id}>"
     # Post a message to the notification channel
-    bot_app.client.chat_postMessage(
-        channel=config["slack"]["notification_channel"],
-        text=message,
-        username="Slack Badges",
-        icon_emoji=":artifactory:",
-    )
+    if not quiet:
+        bot_app.client.chat_postMessage(
+            channel=config["slack"]["notification_channel"],
+            text=message,
+            username="Slack Badges",
+            icon_emoji=":artifactory:",
+        )
 
     # This method is rated to ~30 requests per minute, so we need to sleep
     time.sleep(3)

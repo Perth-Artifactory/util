@@ -37,6 +37,7 @@ with open("config.json", "r") as f:
 func_map = {
     "purify": trigger_functions.turn_on_air_purifier,
     "elab": trigger_functions.elab_lights,
+    "foyer": trigger_functions.foyer_lights,
 }
 
 # Load patterns from file

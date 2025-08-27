@@ -1,5 +1,30 @@
 import requests
 
+def switch_on(entity: str, config: dict) -> bool:
+    print(f"Turning on {entity}")
+
+    if not entity.startswith("switch."):
+        entity = "switch."+entity
+    
+    url = config["home_assistant"]["url"]
+    headers = {
+        "Authorization": f"Bearer {config['home_assistant']['token']}",
+        "content-type": "application/json",
+    }
+
+    payload = {"entity_id": entity}
+
+    response = requests.post(
+        url + "services/switch/turn_on", headers=headers, json=payload
+    )
+
+    if response.status_code in [200, 201]:
+        print(f"{entity} turned on")
+        return True
+    else:
+        print(f"Failed to turn on {entity}")
+        print(response.text)
+        return False
 
 def turn_on_air_purifier(message, app, config):
     print("Turning on air purifier")
@@ -39,27 +64,10 @@ def turn_on_air_purifier(message, app, config):
 
 
 def elab_lights(message, app, config):
-    print("Turning on elab lights")
-    url = config["home_assistant"]["url"]
-    headers = {
-        "Authorization": f"Bearer {config['home_assistant']['token']}",
-        "content-type": "application/json",
-    }
+    return switch_on(entity="switch.iw_relay_electronics_lab_lights", config=config)
 
-    payload = {"entity_id": "switch.iw_relay_electronics_lab_lights"}
-
-    response = requests.post(
-        url + "services/switch/turn_on", headers=headers, json=payload
-    )
-
-    if response.status_code in [200, 201]:
-        print("Elab lights turned on")
-        return True
-    else:
-        print("Failed to turn on elab lights")
-        print(response.text)
-        return False
-
+def foyer_lights(message, app, config):
+    return switch_on(entity="switch.sonoff_1001856f13", config=config)
 
 # function tester
 if __name__ == "__main__":

@@ -2,6 +2,7 @@ import json
 import logging
 import sys
 import time
+from datetime import datetime
 from pprint import pprint
 
 import requests
@@ -47,7 +48,7 @@ def get_tidyhq():
         if not slack:
             continue
 
-        # Check if the user is a member
+        # Check for relevant user groups
         member_induction = False
         member = False
         committee = False
@@ -61,6 +62,23 @@ def get_tidyhq():
                 member_induction = True
             elif group["id"] in config["tidyhq"]["ids"]["volunteer"]:
                 volunteer = True
+
+        # Check for relevant custom fields
+        for field in contact["custom_fields"]:
+            if field["id"] == config["tidyhq"]["ids"].get(
+                "volunteer_field"
+            ) and field.get("value"):
+                # This field is a comma separated list of dates stored as YYMM
+                dates = [x.strip() for x in field["value"].split(",")]
+                for date in dates:
+                    parsed_date = datetime.strptime(date, "%y%m")
+
+                    # Mark the user as a volunteer if the date is this month
+                    if (
+                        parsed_date.year == datetime.now().year
+                        and parsed_date.month == datetime.now().month
+                    ):
+                        volunteer = True
 
         if member or committee or volunteer:
             c[slack] = {

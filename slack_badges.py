@@ -73,10 +73,12 @@ def get_tidyhq():
                 for date in dates:
                     parsed_date = datetime.strptime(date, "%y%m")
 
-                    # Mark the user as a volunteer if the date is this month
+                    # Mark the user as a volunteer if the date is this or last month
+                    # Yes this could be checked with int comparisons but this seems more readable
                     if (
                         parsed_date.year == datetime.now().year
-                        and parsed_date.month == datetime.now().month
+                        and parsed_date.month
+                        in [datetime.now().month, datetime.now().month - 1]
                     ):
                         volunteer = True
 

@@ -69,6 +69,11 @@ def elab_lights(message, app, config):
 def foyer_lights(message, app, config):
     return switch_on(entity="switch.sonoff_1001856f13", config=config)
 
+def demo_func(message, app, config):
+    from pprint import pprint
+    print("Message block:")
+    pprint(message)
+
 # function tester
 if __name__ == "__main__":
     print("Select a function to test:")

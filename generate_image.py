@@ -48,9 +48,10 @@ while draw.textlength(name_string, font_size=140) > max_name_width:
     name_string = name_string[:-4] + "..."
 
 draw.text((boarder*2+bar_width, height/2), name_string, fill=(255, 255, 255), font_size=140, anchor='lm')
-draw.rectangle(draw.textbbox((boarder*2+bar_width, height/2), name_string, font_size=140, anchor='lm'), outline=(255, 0, 0), width=1)
+# draw.rectangle(draw.textbbox((boarder*2+bar_width, height/2), name_string, font_size=140, anchor='lm'), outline=(255, 0, 0), width=1)
 
 draw.text((width-boarder, height/2), time_string, fill=(200, 200, 200), font_size=140, anchor='rm')
-draw.rectangle(draw.textbbox((width-boarder, height/2), time_string, font_size=140, anchor='rm'), outline=(255, 0, 0), width=1)
+# draw.rectangle(draw.textbbox((width-boarder, height/2), time_string, font_size=140, anchor='rm'), outline=(255, 0, 0), width=1)
 
 im.save('door_message.jpg')
+

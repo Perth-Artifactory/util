@@ -38,6 +38,7 @@ func_map = {
     "purify": trigger_functions.turn_on_air_purifier,
     "elab": trigger_functions.elab_lights,
     "foyer": trigger_functions.foyer_lights,
+    "demo": trigger_functions.demo_func
 }
 
 # Load patterns from file

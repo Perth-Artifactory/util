@@ -1,11 +1,14 @@
 import requests
+import json
+import subprocess
+
 
 def switch_on(entity: str, config: dict) -> bool:
     print(f"Turning on {entity}")
 
     if not entity.startswith("switch."):
-        entity = "switch."+entity
-    
+        entity = "switch." + entity
+
     url = config["home_assistant"]["url"]
     headers = {
         "Authorization": f"Bearer {config['home_assistant']['token']}",
@@ -25,6 +28,7 @@ def switch_on(entity: str, config: dict) -> bool:
         print(f"Failed to turn on {entity}")
         print(response.text)
         return False
+
 
 def turn_on_air_purifier(message, app, config):
     print("Turning on air purifier")
@@ -63,16 +67,35 @@ def turn_on_air_purifier(message, app, config):
                 return False
 
 
-def elab_lights(message, app, config):
+def elab_lights(message, app, config) -> bool:
     return switch_on(entity="switch.iw_relay_electronics_lab_lights", config=config)
 
-def foyer_lights(message, app, config):
+
+def foyer_lights(message, app, config) -> bool:
     return switch_on(entity="switch.sonoff_1001856f13", config=config)
+
+
+def hud_image(message, app, config):
+    """Writes the message block to a file and triggers the HUD image generator script"""
+
+    try:
+        with open(config["hud"]["json"], "w") as f:
+            json.dump(message, f, indent=4)
+    except Exception as e:
+        print(f"Failed to write HUD message data: {e}")
+        return False
+
+    subprocess.run(["python", "generate_image.py"])
+
+    return True
+
 
 def demo_func(message, app, config):
     from pprint import pprint
+
     print("Message block:")
     pprint(message)
+
 
 # function tester
 if __name__ == "__main__":

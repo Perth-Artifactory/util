@@ -38,7 +38,8 @@ func_map = {
     "purify": trigger_functions.turn_on_air_purifier,
     "elab": trigger_functions.elab_lights,
     "foyer": trigger_functions.foyer_lights,
-    "demo": trigger_functions.demo_func
+    "hud_image": trigger_functions.hud_image,
+    "demo": trigger_functions.demo_func,
 }
 
 # Load patterns from file
@@ -78,9 +79,10 @@ def handle_message(message, say):
                     conversation: SlackResponse = app.client.conversations_open(
                         users=user
                     )
+
                     # Send a message to the user
                     app.client.chat_postMessage(
-                        channel=conversation["channel"]["id"],
+                        channel=conversation["channel"]["id"],  # type: ignore
                         text=f"{pattern} was detected in <#{config['slack']['trigger_channel']}>.",
                     )
 

@@ -13,6 +13,8 @@ if "hud" not in config or "json" not in config["hud"] or "image" not in config["
 with open(config["hud"]["json"], "r") as f:
     message_data = json.load(f)
 
+name_string = message_data["attachments"][0]["fields"][0]["value"]
+
 try:
     ts = float(message_data["ts"])
 except ValueError:
@@ -26,17 +28,31 @@ seconds = time_diff.seconds
 hours = seconds // 3600
 minutes = (seconds % 3600) // 60
 
+# Colour definitions to make things more readable
+greyed_out = (100, 100, 100)
+light_grey = (200, 200, 200)
+white = (255, 255, 255)
+blue = (0, 0, 255)
+green = (0, 255, 0)
+light_blue = (150, 150, 255)
+
 time_string = ""
-if seconds < 1:
+bar_colour = greyed_out
+name_colour = greyed_out
+time_colour = light_grey
+
+if seconds < 20:
     time_string = "Now"
+    bar_colour = blue
+    name_colour = light_blue
 elif minutes < 1:
     time_string = f"{seconds}s ago"
+    bar_colour = blue
+    name_colour = white
 elif hours < 1:
     time_string = f"{minutes}m ago"
-else:
-    time_string = past_time.strftime("%H:%M")
-
-name_string = message_data["attachments"][0]["fields"][0]["value"]
+    bar_colour = green
+    name_colour = white
 
 height = 180
 width = 1920
@@ -48,8 +64,8 @@ boarder = 20
 bar_width = 10
 draw.rounded_rectangle(
     (boarder, boarder, boarder + bar_width, height - boarder),
-    fill=(255, 0, 0),
-    outline=(255, 0, 0),
+    fill=bar_colour,
+    outline=bar_colour,
     radius=10,
 )
 
@@ -63,8 +79,8 @@ while draw.textlength(name_string, font_size=140) > max_name_width:
 
 draw.text(
     (boarder * 2 + bar_width, height / 2),
-    name_string,
-    fill=(255, 255, 255),
+    name_string if hours < 1 else "No scans in past hour",
+    fill=name_colour,
     font_size=140,
     anchor="lm",
 )
@@ -73,7 +89,7 @@ draw.text(
 draw.text(
     (width - boarder, height / 2),
     time_string,
-    fill=(200, 200, 200),
+    fill=time_colour,
     font_size=140,
     anchor="rm",
 )

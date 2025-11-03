@@ -45,6 +45,7 @@ if seconds < 20:
     time_string = "Now"
     bar_colour = blue
     name_colour = light_blue
+    time_colour = light_blue
 elif minutes < 1:
     time_string = f"{seconds}s ago"
     bar_colour = blue

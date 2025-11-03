@@ -3,7 +3,14 @@ import json
 
 from PIL import Image, ImageDraw
 
-with open("message_data.json", "r") as f:
+# Load config
+with open("config.json", "r") as f:
+    config = json.load(f)
+
+if "hud" not in config or "json" not in config["hud"] or "image" not in config["hud"]:
+    raise ValueError("HUD configuration missing in config.json")
+
+with open(config["hud"]["json"], "r") as f:
     message_data = json.load(f)
 
 try:
@@ -72,4 +79,4 @@ draw.text(
 )
 # draw.rectangle(draw.textbbox((width-boarder, height/2), time_string, font_size=140, anchor='rm'), outline=(255, 0, 0), width=1)
 
-im.save("door_message.jpg")
+im.save(config["hud"]["image"])

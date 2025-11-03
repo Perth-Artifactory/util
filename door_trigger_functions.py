@@ -100,12 +100,15 @@ def demo_func(message, app, config):
 
 # function tester
 if __name__ == "__main__":
-    print("Select a function to test:")
-    print("1. turn_on_air_purifier")
-    print("2. elab_lights")
-    print("3. hud_image")
-    print("4. demo_func")
-    choice = input("Choice: ")
+    if len(sys.argv) > 1:
+        choice = sys.argv[1]
+    else:
+        print("Select a function to test:")
+        print("1. turn_on_air_purifier")
+        print("2. elab_lights")
+        print("3. hud_image")
+        print("4. demo_func")
+        choice = input("Choice: ")
     if choice in ["1", "2", "3", "4"]:
         import json
         from slack_bolt import App
@@ -138,3 +141,5 @@ if __name__ == "__main__":
             if choice == "4":
                 print("Running demo_func:")
                 demo_func(message, app, config)
+    else:
+        print("Invalid choice")

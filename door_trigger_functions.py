@@ -102,6 +102,8 @@ if __name__ == "__main__":
     print("Select a function to test:")
     print("1. turn_on_air_purifier")
     print("2. elab_lights")
+    print("3. hud_image")
+    print("4. demo_func")
     choice = input("Choice: ")
     if choice in ["1", "2"]:
         import json
@@ -116,3 +118,17 @@ if __name__ == "__main__":
 
         if choice == "2":
             elab_lights(None, app, config)
+
+        if choice in ["3", "4"]:
+            # Retrieve the latest message from the trigger channel
+            response = app.client.conversations_history(
+                channel=config["slack"]["trigger_channel"], limit=1
+            )
+
+            message = response["messages"][0]  # type: ignore
+
+            if choice == "3":
+                hud_image(message, app, config)
+
+            if choice == "4":
+                demo_func(message, app, config)

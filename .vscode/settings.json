@@ -12,6 +12,7 @@
         "preconfigured",
         "pydub",
         "ratelimited",
+        "textlength",
         "tidyhq",
         "tlines",
         "USLACKBOT"

@@ -1,6 +1,7 @@
 import requests
 import json
 import subprocess
+import sys
 
 
 def switch_on(entity: str, config: dict) -> bool:
@@ -85,7 +86,7 @@ def hud_image(message, app, config):
         print(f"Failed to write HUD message data: {e}")
         return False
 
-    subprocess.run(["python", "generate_image.py"])
+    subprocess.run([sys.executable, "generate_image.py"])
 
     return True
 

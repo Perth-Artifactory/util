@@ -137,3 +137,5 @@ trigger_patterns.json
 
 files.json
 slack_titles.json
+message_data.json
+door_message.jpg

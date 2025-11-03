@@ -105,7 +105,7 @@ if __name__ == "__main__":
     print("3. hud_image")
     print("4. demo_func")
     choice = input("Choice: ")
-    if choice in ["1", "2"]:
+    if choice in ["1", "2", "3", "4"]:
         import json
         from slack_bolt import App
 
@@ -114,12 +114,15 @@ if __name__ == "__main__":
         app = App(token=config["slack"]["bot_token"])
 
         if choice == "1":
+            print("Running turn_on_air_purifier:")
             turn_on_air_purifier(None, app, config)
 
         if choice == "2":
+            print("Running elab_lights:")
             elab_lights(None, app, config)
 
         if choice in ["3", "4"]:
+            print("Loading Slack message from trigger channel...")
             # Retrieve the latest message from the trigger channel
             response = app.client.conversations_history(
                 channel=config["slack"]["trigger_channel"], limit=1
@@ -128,7 +131,9 @@ if __name__ == "__main__":
             message = response["messages"][0]  # type: ignore
 
             if choice == "3":
+                print("Running hud_image:")
                 hud_image(message, app, config)
 
             if choice == "4":
+                print("Running demo_func:")
                 demo_func(message, app, config)

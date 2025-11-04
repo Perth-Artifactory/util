@@ -38,7 +38,7 @@ func_map = {
     "purify": trigger_functions.turn_on_air_purifier,
     "elab": trigger_functions.elab_lights,
     "foyer": trigger_functions.foyer_lights,
-    "hud_image": trigger_functions.hud_image,
+    "dump_message": trigger_functions.dump_message,
     "demo": trigger_functions.demo_func,
 }
 

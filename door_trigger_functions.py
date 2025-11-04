@@ -76,17 +76,21 @@ def foyer_lights(message, app, config) -> bool:
     return switch_on(entity="switch.sonoff_1001856f13", config=config)
 
 
-def hud_image(message, app, config):
-    """Writes the message block to a file and triggers the HUD image generator script"""
+def dump_message(message, app, config):
+    """Dumps the message block to a file"""
+
+    data = {"ts": message["ts"]}
+
+    for field in message["attachments"][0]["fields"]:
+        if field["title"] == "Name":
+            data["name"] = field["value"]
 
     try:
         with open(config["hud"]["json"], "w") as f:
-            json.dump(message, f, indent=4)
+            json.dump(data, f, indent=4)
     except Exception as e:
         print(f"Failed to write HUD message data: {e}")
         return False
-
-    subprocess.run([sys.executable, "generate_image.py"])
 
     return True
 
@@ -106,7 +110,7 @@ if __name__ == "__main__":
         print("Select a function to test:")
         print("1. turn_on_air_purifier")
         print("2. elab_lights")
-        print("3. hud_image")
+        print("3. dump_message")
         print("4. demo_func")
         choice = input("Choice: ")
     if choice in ["1", "2", "3", "4"]:
@@ -135,8 +139,8 @@ if __name__ == "__main__":
             message = response["messages"][0]  # type: ignore
 
             if choice == "3":
-                print("Running hud_image:")
-                hud_image(message, app, config)
+                print("Running dump_message:")
+                dump_message(message, app, config)
 
             if choice == "4":
                 print("Running demo_func:")
